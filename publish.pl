@@ -41,7 +41,7 @@ for my $entry ( sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title}}
 for my $entry ( sort { $a->{Order} <=> $b->{Order} } @non_blog_entries ) {
     write_file_contents("$ENV{PWD}/out/" . $entry->{Path}, process_template(
         'main',
-        {Content => process_template('entry', $entry)},
+        {Content => process_template('entry', $entry), Title => $entry->{Title}. " - "},
     ));
     $link_list_html .= process_template('link_list_entry', $entry);
 }
@@ -134,7 +134,7 @@ sub process_and_write_blog_entry
     $entry->{Date} = process_template('date', {Date => $entry->{Date}});
 
     my $entry_html = process_template('entry', $entry);
-    my $page_html = process_template('main', {Content => $entry_html});
+    my $page_html = process_template('main', {Content => $entry_html, Title => $entry->{Title} . " - "});
 
     my $filename = $ENV{PWD} . "/out/" . $entry->{Path};
     write_file_contents($filename, $page_html);

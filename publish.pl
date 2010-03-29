@@ -26,8 +26,13 @@ my @non_blog_entries = grep { !defined $_->{Date} } @entries;
 my $blog_entries_html = "";
 my $link_list_html = "";
 my $archive_list_html = "";
+
+my $count = 0;
 for my $entry ( sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title}} @blog_entries ) {
-    $blog_entries_html .= process_and_write_blog_entry($entry);
+    my $html = process_and_write_blog_entry($entry);
+    if ($count++ < 10) {
+        $blog_entries_html .= $html
+    }
     $archive_list_html .= process_template('archive_entry', $entry);
 }
 
@@ -75,7 +80,7 @@ File::Find::find(sub {
 
 unless ($dry_run) {
     print "Pushing site to live\n";
-    system("scp -r out kodos:/var/web/bugsplat.info");
+    system("scp -r out/* kodos:/var/web/bugsplat.info/");
 }
 
 sub parse_one_file

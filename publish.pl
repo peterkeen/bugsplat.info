@@ -17,6 +17,8 @@ GetOptions(
 my @entries;
 
 File::Find::find(sub {
+    return unless $_;
+    return if $_ =~ /^[#\.]/;
     push @entries, parse_one_file($File::Find::name);
 }, "$ENV{PWD}/entries/");
 

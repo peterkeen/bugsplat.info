@@ -80,9 +80,13 @@ File::Find::find(sub {
     );
 }, "$ENV{PWD}/static/");
 
-unless ($dry_run) {
-    print "Pushing site to live\n";
+if ($dry_run) {
+    print "Opening browser\n";
+    system("open $ENV{PWD}/out/index.html");
+} else {
+    print "Pushing to live\n";
     system("scp -r out/* kodos:/var/web/bugsplat.info/");
+    system("open http://bugsplat.info");
 }
 
 sub parse_one_file

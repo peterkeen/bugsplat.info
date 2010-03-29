@@ -102,8 +102,8 @@ sub parse_one_file
 
 sub parse_entry
 {
-    my ($contents, $filename) = shift;
-    my ($headers, $content) = split(/\n\n/, $contents, 2);
+    my $raw_contents = shift;
+    my ($headers, $content) = split(/\n\n/, $raw_contents, 2);
     my %headers = map { split(/:\s+/, $_, 2) } split(/\n/, $headers);
     $content ||= "";
     $headers{Content} = markdown($content);

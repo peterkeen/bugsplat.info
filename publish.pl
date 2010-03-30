@@ -155,7 +155,7 @@ sub process_template
     my $content = read_file("$ENV{PWD}/templates/$template.html");
     $content =~ s{\${([\w_]+)}}{
         my $out = "";
-        if ($values->{$1}) {
+        if (defined $values->{$1}) {
             $out = $values->{$1};
         }
         $out;
@@ -180,7 +180,8 @@ sub process_and_write_blog_entry
     my $date = process_template('date', {Date => natural_date_for_entry($entry)});
 
     my $entry_html = process_template('entry', { %$entry, Date => $date});
-    my $page_html = process_template('main', {Content => $entry_html, Title => $entry->{Title} . " - "});
+    my $comments_html = process_template('comments', {Dryrun => $dry_run ? 1 : 0});
+    my $page_html = process_template('main', {Content => $entry_html . $comments_html, Title => $entry->{Title} . " - "});
 
     my $filename = $ENV{PWD} . "/out/" . $entry->{Path};
     write_file($filename, $page_html);

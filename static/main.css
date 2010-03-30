@@ -81,3 +81,8 @@ a:active {
 	height: 1%;
     font-size: 60%;
 }
+
+div.entry
+{
+  margin-bottom: 2em;
+}

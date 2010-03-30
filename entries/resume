@@ -1,0 +1,87 @@
+Title: Resume
+
+### Skills
+
+* Programming Languages: Perl, C++, HTML/CSS, Javascript, Java, Python, Ruby
+* Operating Systems: Linux, Max OS X, Windows 2000/XP
+* Databases: PostgreSQL, MySQL
+
+### Experience ##
+
+#### Software Developer, January 2007 - Current ###
+
+[Rentrak Corporation](http://www.rentrak.com), Portland, OR
+
+* Work with a team of seven other developers to maintain and enhance
+  a custom data repository that stores billions of television views.
+  The repository is a blend of C++, Perl, and PostgreSQL.
+
+* Design, develop, and maintain two different demographics systems
+  that overlay demographic and psychographic segments on top of Rentrak's
+  television viewing database. The first overlays zip-code level segments
+  from the US census and other third-party sources. The other overlays
+  household-level demographics from credit reporting agencies as well as
+  internally developed behavioral demographics using a custom module
+  within the view repository.
+  
+* Help develop a SQL-like language that compiles to C++ using Perl and
+  [Parse::RecDescent](http://search.cpan.org/dist/Parse-RecDescent) to
+  enable internal users to query the view repository.
+
+* Write one-time and repeatable data extraction and analysis programs
+  to support statistical analysis of televsion viewing behavior.
+
+* Worked with another developer and the system administration team to
+  convert the entire company from subversion to git. Internal repos are
+  hosted using [gitolite](http://github.com/sitaramc/gitolite).
+
+#### Software Development Intern, Sept 2006 - Dec 2006
+
+Quad Graphics and University of Wisconsin-Whitewater Management and Computer Systems
+
+* Enhanced Ruby on Rails' ActiveRecord support for Sybase
+* Extended ActiveRecord's ability to generate model objects from
+  arbitrary database tables.
+* Used these new capabilities to enable repeatable unit testing
+  of database-driven .Net applications on developers' desktops by
+  pulling only the needed sets of test data from a central database.
+  
+#### Research Assistant, Fall 2005 - Spring 2006
+
+Aurora Health Care and University of Wisconsin - Whitewater Management Computer Systems
+
+* Implemented a data aggregation system among several dissimilar data silos
+  using JSP, servlets, Lucene, jUnit, ant, and MS SQL Server. Silos did not share 
+  primary keys and contained similar but not identical profile information, so the 
+  system guided a user through a three step selection and matching process.
+  
+#### Helpdesk Intern, Summer 2006
+
+HouseValues.Com, Kirkland, Washington
+
+* Replaced an existing computer imaging system based on usb harddrives with a network-based
+  system using BartPE and Ghost.
+* Maintained a comprehensive inventory of 550 desktops and 50 servers.
+* Wrote and maintained system administration scripts in Python and Javascript using
+  Windows Scripting Host
+* Assisted in day-to-day helpdesk activies
+
+
+### Education
+
+#### Bachelor of Science in Management Computer Systems
+
+Computer Science Minor  
+University of Wisconsin - Whitewater  
+Graduated December 2006
+
+* Completed a year-long project for a major bank in Milwaukee that implemented a
+  debit card reward processing and redemption system using ASP.NET, VB.NET and SQL Server 2000.
+
+### Achievements and Service
+
+#### Eagle Scout
+
+Boy Scouts of America Troop 417, Milton, Wisconsin  
+Awarded Summer 2002  
+Planned and led a project to build and install benches in an area park.

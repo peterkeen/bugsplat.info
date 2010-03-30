@@ -57,11 +57,18 @@ for my $entry ( sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title}}
 }
 
 for my $entry ( sort { $a->{Order} <=> $b->{Order} } @non_blog_entries ) {
+    $link_list_html .= process_template('link_list_entry', $entry);
+}
+
+for my $entry ( sort { $a->{Order} <=> $b->{Order} } @non_blog_entries ) {
     write_file("$ENV{PWD}/out/" . $entry->{Path}, process_template(
         'main',
-        {Content => process_template('entry', $entry), Title => $entry->{Title}. " - "},
+        {
+            Content => process_template('entry', { %$entry, PathSuffix => ''}),
+            Title => $entry->{Title}. " - ",
+            LinkList => $link_list_html,
+        },
     ));
-    $link_list_html .= process_template('link_list_entry', $entry);
 }
 
 print "Writing index\n";
@@ -142,10 +149,13 @@ sub parse_entry
     my %headers = map { split(/:\s+/, $_, 2) } split(/\n/, $headers);
     $content ||= "";
     $headers{Content} = markdown($content);
-    $headers{Date} = DateTime::Format::Natural->new(
-        time_zone => 'America/Los_Angeles'
-    )->parse_datetime($headers{Date});
-    $headers{Date}->set_time_zone('UTC');
+    if ($headers{Date}) {
+        $headers{Date} = DateTime::Format::Natural->new(
+            time_zone => 'America/Los_Angeles'
+        )->parse_datetime($headers{Date});
+        $headers{Date}->set_time_zone('UTC');
+    }
+
     return \%headers;
 }
 
@@ -179,7 +189,7 @@ sub process_and_write_blog_entry
 
     my $date = process_template('date', {Date => natural_date_for_entry($entry)});
 
-    my $entry_html = process_template('entry', { %$entry, Date => $date});
+    my $entry_html = process_template('entry', { %$entry, Date => $date, PathSuffix => '#disqus_thread'});
     my $comments_html = process_template('comments', {Dryrun => $dry_run ? 1 : 0});
     my $page_html = process_template('main', {Content => $entry_html . $comments_html, Title => $entry->{Title} . " - "});
 

@@ -3,10 +3,14 @@
 use strict;
 
 use Carp;
+use DateTime::Format::Natural;
+use DateTime::Format::W3CDTF;
 use File::Basename 'basename';
 use File::Find;
-use IO::File;
+use File::Slurp qw/ read_file write_file /;
+use File::Copy;
 use Text::Markdown 'markdown';
+use XML::Atom::SimpleFeed;
 
 use Getopt::Long;
 
@@ -22,6 +26,12 @@ File::Find::find(sub {
     push @entries, parse_one_file($File::Find::name);
 }, "$ENV{PWD}/entries/");
 
+my $atom = XML::Atom::SimpleFeed->new(
+    title => 'Bugsplat',
+    link  => 'http://bugsplat.info',
+    author => { name => 'Pete Keen', email => 'pete@bugsplat.info' },
+);
+
 my @blog_entries = grep { defined $_->{Date} } @entries;
 my @non_blog_entries = grep { !defined $_->{Date} } @entries;
 
@@ -36,10 +46,18 @@ for my $entry ( sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title}}
         $blog_entries_html .= $html
     }
     $archive_list_html .= process_template('archive_entry', $entry);
+    $atom->add_entry(
+        title     => $entry->{Title},
+        link      => 'http://bugsplat.info/' . $entry->{Path},
+        id        => id_for_entry($entry, $count),
+        published => atom_date_for_entry($entry),
+        updated   => atom_date_for_entry($entry),
+        content   => $entry->{Content},
+    );
 }
 
 for my $entry ( sort { $a->{Order} <=> $b->{Order} } @non_blog_entries ) {
-    write_file_contents("$ENV{PWD}/out/" . $entry->{Path}, process_template(
+    write_file("$ENV{PWD}/out/" . $entry->{Path}, process_template(
         'main',
         {Content => process_template('entry', $entry), Title => $entry->{Title}. " - "},
     ));
@@ -47,7 +65,7 @@ for my $entry ( sort { $a->{Order} <=> $b->{Order} } @non_blog_entries ) {
 }
 
 print "Writing index\n";
-write_file_contents(
+write_file(
     "$ENV{PWD}/out/index.html",
     process_template(
         'main',
@@ -59,7 +77,7 @@ write_file_contents(
 );
 
 print "Writing archive\n";
-write_file_contents(
+write_file(
     "$ENV{PWD}/out/archive.html",
     process_template(
         'main',
@@ -70,14 +88,18 @@ write_file_contents(
     )
 );
 
+print "Writing atom feed\n";
+write_file(
+    "$ENV{PWD}/out/index.xml",
+    $atom->as_string(),
+);
+
 print "Copying static files\n";
+
 File::Find::find(sub {
     return unless -f $File::Find::name;
     print $File::Find::name . "\n";
-    write_file_contents(
-        "$ENV{PWD}/out/" . basename($File::Find::name),
-        read_file_contents($File::Find::name),
-    );
+    copy($File::Find::name, "$ENV{PWD}/out/" . basename($File::Find::name));
 }, "$ENV{PWD}/static/");
 
 if ($dry_run) {
@@ -89,13 +111,26 @@ if ($dry_run) {
     system("open http://bugsplat.info");
 }
 
+sub id_for_entry
+{
+    my ($entry, $number) = @_;
+    return 'tag:bugsplat.info,' . $entry->{Date} . ':' . $number;
+}
+
+sub atom_date_for_entry
+{
+    my $date = shift->{Date}->clone;
+    return DateTime::Format::W3CDTF->new()->format_datetime($date);
+}
+
 sub parse_one_file
 {
     my $file = shift;
     my $stripped_file = $file . ".html";
     return () if -d $file;
     substr($stripped_file, 0, length("$ENV{PWD}/entries/"), '');
-    my $entry = parse_entry(read_file_contents($file));
+    my $contents = read_file($file);
+    my $entry = parse_entry($contents);
     $entry->{Path} = $stripped_file;
     return $entry;
 }
@@ -107,13 +142,17 @@ sub parse_entry
     my %headers = map { split(/:\s+/, $_, 2) } split(/\n/, $headers);
     $content ||= "";
     $headers{Content} = markdown($content);
+    $headers{Date} = DateTime::Format::Natural->new(
+        time_zone => 'America/Los_Angeles'
+    )->parse_datetime($headers{Date});
+    $headers{Date}->set_time_zone('UTC');
     return \%headers;
 }
 
 sub process_template
 {
     my ($template, $values) = @_;
-    my $content = read_file_contents("$ENV{PWD}/templates/$template.html");
+    my $content = read_file("$ENV{PWD}/templates/$template.html");
     $content =~ s{\${([\w_]+)}}{
         my $out = "";
         if ($values->{$1}) {
@@ -124,6 +163,13 @@ sub process_template
     return $content;
 }
 
+sub natural_date_for_entry
+{
+    my $date = shift->{Date}->clone();
+    $date->set_time_zone('America/Los_Angeles');
+    return $date->format_cldr("EEEE, dd LLLL YYYY 'around' h 'o''clock' a");
+}
+
 sub process_and_write_blog_entry
 {
     my $orig_entry = shift;
@@ -131,29 +177,13 @@ sub process_and_write_blog_entry
 
     print $entry->{Date} . " " . $entry->{Title} . " " . $entry->{Path} . "\n";
 
-    $entry->{Date} = process_template('date', {Date => $entry->{Date}});
+    my $date = process_template('date', {Date => natural_date_for_entry($entry)});
 
-    my $entry_html = process_template('entry', $entry);
+    my $entry_html = process_template('entry', { %$entry, Date => $date});
     my $page_html = process_template('main', {Content => $entry_html, Title => $entry->{Title} . " - "});
 
     my $filename = $ENV{PWD} . "/out/" . $entry->{Path};
-    write_file_contents($filename, $page_html);
+    write_file($filename, $page_html);
 
     return $entry_html;
-}
-
-sub read_file_contents
-{
-    my $filename = shift;
-    my $fh = IO::File->new($filename, "r") or die "cannot open $filename: $!";
-    return join('', $fh->getlines());
-}
-
-sub write_file_contents
-{
-    my ($filename, $contents) = @_;
-    croak "no filename supplied" unless defined $filename;
-    my $fh = IO::File->new($filename, "w+") or die "cannot open $filename: $!";
-    $fh->print($contents);
-    $fh->close();
 }

@@ -16,7 +16,13 @@ use Getopt::Long;
 
 GetOptions(
     "d|dry-run" => \my $dry_run,
+    "l|live"  =>   \my $live,
 );
+
+if (! ($dry_run || $live) ) {
+    print STDERR "one of either --dry-run or --live is needed\n";
+    exit 1;
+}
 
 my @entries;
 
@@ -112,10 +118,12 @@ File::Find::find(sub {
 if ($dry_run) {
     print "Opening browser\n";
     system("open $ENV{PWD}/out/index.html");
-} else {
+} elsif ($live) {
     print "Pushing to live\n";
     system("scp -r out/* kodos:/var/web/bugsplat.info/");
     system("open http://bugsplat.info");
+} else {
+    print "Doing nothing?\n";
 }
 
 sub id_for_entry

@@ -4,11 +4,11 @@ body
 }
 
 a:link { 
-	color: #333377;
+	color: #5555AA;
 	text-decoration: none;
 	}
 a:visited { 
-	color: #333377;
+	color: #5555AA;
 	text-decoration: none;
 	}
 a:hover { 
@@ -16,7 +16,7 @@ a:hover {
 	text-decoration: underline;
 	}
 a:active { 
-	color: #333377;
+	color: #5555AA;
 	text-decoration: underline;
 	}
 

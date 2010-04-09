@@ -1,0 +1,42 @@
+Title: Calorific, a Simple Calorie Tracker
+Date:  2010-04-08 19:00:00
+
+I'm a nerd. I write software for a living. I spend a lot of my day either sitting in a chair in front of a computer, or laying on my couch using my laptop. I'm not what you'd call... athletic. I _did_ start lifting weights about six months ago but that's really just led to gaining more weight, not losing it. A few years back I started counting calories and I lost some weight, and then stopped counting calories and gained it all back. Time to change that.
+
+Now, I could use one of the [many](http://www.sparkpeople.com/), [many](http://caloriecount.about.com/) online calorie trackers. They're all ok and they have the advantage of being able to enter data whenever and where ever you are, but most of them have ads and using a web interface is kind of slow and staring at ads sucks. Also, the reports you can generate from them are always a bit limited. What if I want to see a monthly average of how many calories I ate as snacks? Or how many calories I shoved down my gullet from fast food? Or maybe I want to track another nutrient, like grams of protein. Doing all of this through a limited web interface would be tricky, to say the least. There has to be a better way.
+
+I've been using this program called [ledger][] for more than three years now to keep track of my finances. The idea is that you maintain a text file that contains all of your transactions in a really simple format, and then you can run basically arbitrary reports on it. I always have [emacs][] open, so maintaining that file is a snap. I'd like to maintain my calorie history in the same way, using a lightly formatted text file. I actually tried to use ledger for this purpose but the syntax just wasn't right. What I really wanted was a way to build up foods from simpler foods, and have those be built from other, simpler foods, all the way down to calories. Something like this:
+
+<pre>
+1 cup milk             = 100 kcal
+1 scoop protein powder = 65 kcal
+1 protein shake =
+    1.5 cup milk,
+    2 scoop protein powder
+    
+2010-04-08 breakfast
+    1 protein shake
+</pre>
+
+I danced around this format for quite awhile, trying to parse it line-wise and trying to parse it with [Parse::RecDescent][prd] and [treetop][], and nothing ever really fit. Then, I punted. What's a lightweight, human readable format that already has a parser built? Why, [YAML] of course! Here's the same thing as a YAML snippet:
+
+<pre>
+- 1 cup milk: 100 kcal
+- 1 scoop protein powder: 65 kcal
+- 1 protein shake:
+    - 1.5 cup milk
+    - 2 scoop protein powder
+    
+- 2010-04-08 breakfast:
+    - 1 protein shake
+</pre>
+
+The basic idea revolves around the concept of a _recipe_. Essentially, a recipe is a count, a label, and a bunch of components that can also be recipes. "100 kcal" is actually a recipe all by itself. Entries are just recipes that have a date instead of a count. At run-time, we resolve all the labels into recipes and then recursively get the values. Ideally everyhing will resolve down to a handful of base units, like "kcal" or "g protein", but if something doesn't resolve it'll get included right into the output.
+
+So, ok, now I just need a program to analyze this stupid thing and print me some reports. That's where [Calorific](http://github.com/peterkeen/calorific) comes in. It's a little application (<500 lines, actually) that parses that YAML file and prints out either a detail or daily report. I have some big plans for it, including a report that gives the monthly average of daily totals, options to limit the date range you want to report, and 30 day moving averages. Installation instructions are in the readme file, if you'd like to try it out.
+
+[ledger]:  http://wiki.github.com/jwiegley/ledger/
+[emacs]:   http://www.gnu.org/software/emacs/
+[treetop]: http://treetop.rubyforge.org/
+[prd]:     http://search.cpan.org/dist/Parse-RecDescent
+[YAML]:    http://www.yaml.org/

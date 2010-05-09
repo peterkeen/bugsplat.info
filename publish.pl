@@ -55,7 +55,7 @@ for my $entry ( sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title}}
     $atom->add_entry(
         title     => $entry->{Title},
         link      => 'http://bugsplat.info/' . $entry->{Path},
-        id        => id_for_entry($entry, $count),
+        id        => id_for_entry($entry),
         published => atom_date_for_entry($entry),
         updated   => atom_date_for_entry($entry),
         content   => $entry->{Content},
@@ -128,8 +128,8 @@ if ($dry_run) {
 
 sub id_for_entry
 {
-    my ($entry, $number) = @_;
-    return 'tag:bugsplat.info,' . $entry->{Date} . ':' . $number;
+    my ($entry) = @_;
+    return 'tag:bugsplat.info,' . $entry->{Date} . ':' . $entry->{Id};
 }
 
 sub atom_date_for_entry

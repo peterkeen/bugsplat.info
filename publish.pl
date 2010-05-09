@@ -45,9 +45,14 @@ my $blog_entries_html = "";
 my $link_list_html = "";
 my $archive_list_html = "";
 
+for my $entry ( sort { $a->{Order} <=> $b->{Order} } @non_blog_entries ) {
+    $link_list_html .= process_template('link_list_entry', $entry);
+}
+
 my $count = 0;
+
 for my $entry ( sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title}} @blog_entries ) {
-    my $html = process_and_write_blog_entry($entry);
+    my $html = process_and_write_blog_entry($entry, $link_list_html);
     if ($count++ < 10) {
         $blog_entries_html .= $html
     }
@@ -60,10 +65,6 @@ for my $entry ( sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title}}
         updated   => atom_date_for_entry($entry),
         content   => $entry->{Content},
     );
-}
-
-for my $entry ( sort { $a->{Order} <=> $b->{Order} } @non_blog_entries ) {
-    $link_list_html .= process_template('link_list_entry', $entry);
 }
 
 for my $entry ( sort { $a->{Order} <=> $b->{Order} } @non_blog_entries ) {
@@ -191,6 +192,7 @@ sub natural_date_for_entry
 sub process_and_write_blog_entry
 {
     my $orig_entry = shift;
+    my $link_list_html = shift;
     my $entry = { %$orig_entry };
 
     print $entry->{Date} . " " . $entry->{Title} . " " . $entry->{Path} . "\n";
@@ -199,7 +201,13 @@ sub process_and_write_blog_entry
 
     my $entry_html = process_template('entry', { %$entry, Date => $date, PathSuffix => '#disqus_thread'});
     my $comments_html = process_template('comments', {Dryrun => $dry_run ? 1 : 0});
-    my $page_html = process_template('main', {Content => $entry_html . $comments_html, Title => $entry->{Title} . " - "});
+    my $page_html = process_template(
+        'main', {
+            Content => $entry_html . $comments_html,
+            Title => $entry->{Title} . " - ",
+            LinkList => $link_list_html,
+        }
+    );
 
     my $filename = $ENV{PWD} . "/out/" . $entry->{Path};
     write_file($filename, $page_html);

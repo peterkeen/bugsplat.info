@@ -96,6 +96,7 @@ write_file(
     process_template(
         'main',
         {
+            Title => 'Archive - ',
             Content => $archive_list_html,
             LinkList => $link_list_html,
         }

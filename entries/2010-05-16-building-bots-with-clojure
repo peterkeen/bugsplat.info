@@ -1,0 +1,104 @@
+Title: Building Bots with Clojure
+Date:  2010-05-16 23:00:00
+Id:    5
+
+Once in a while at [Rentrak][] we have programming competitions, where anyone who wants to, including sysadmins and DBAs, can submit an entry for whatever the problem is. The previous contest involved writing a poker bot which had to play two-card hold'em, while others have involved problems similar in spirit to the Netflix Prize. This time we chose to build virtual robots that shoot each other with virtual cannons and go virtual boom! We'll be using [RealTimeBattle][], which is a piece of software designed specifically to facilitate contests of this sort. It's kind of like those other robot-battle systems, except instead of requiring you to write your robot in their own arbitrary, broken, horrible language, this lets you write your bot in any language that can talk on stdin and stdout.
+
+Based on my previous entries the natural choice would be perl, right? I thought about it, actually. Started stubbing something out. Wrote some code to emulate enums and it worked on the first try, which brought to light the fact that I hadn't learned a new language in quite a long time and by *not* using a new language I was missing a golden opportunity. So, which language? The only real constraint that we, the Happy Fun Robot Times Killing Group, decided on was that it had to be easily installable on Ubuntu, which leaves the field pretty much wide open. Ruby? Already know it in passing. Python? Haven't done much with it for a few years but I don't think it's changed that much. Lisp? Hm. Intriging. [Clojure][] looks interesting, and it's a good chance to figure out multithreading.
+
+The RealTimeBattle system is conceptually pretty simple. Your robot is a little doughnut-shaped thing that can go forward, backward, accelerate, brake, and turn. In addition, it has a big cannon and a radar system, both of which can rotate independent of the bot itself. The radar is the only sensor you an rely on, although in some configurations you'll get coordinates relative to your start position every few game ticks.
+
+When the game starts, the system will start up your bot in a child process and attach to stdin and stdout, so from the bot's point of view it's just talking a [simple text protocol][bot_construction]. In perl, talking this protocol would be a trivial combination of `while(<>){ }` and `print`, but in clojure it seems to be a might bit more complicated:
+
+<pre>
+(loop []
+  (let [in (read-line)]
+    (if (not (nil? in))
+      (do
+        (println in)
+        (recur)))))
+</pre>
+
+Just writing that bit took me down about a dozen false starts, but I learned a whole lot about clojure in the process so I'm pretty sure it was worth it.
+
+Ok, so now this little bot can listen, let's make it talk. RealTimeBattle has a command that your bot can send to the server to make it print out something in the message log. We can wrap that in a function like so:
+
+<pre>
+(defn message [m & rest]
+  (println (str "Print " m rest)))
+</pre>
+
+and call that like this:
+
+<pre>
+(message "Hi there my name is Botty McBotterson!")
+</pre>
+
+The two other basic commands that I've implmented so far are `Initialize`, which will get sent when the system is ready to find out what name your bot has, and `GameOption`, which tells you all kinds of information about the environment that the bot lives in. Here's the whole program as it stands:
+
+<pre>
+(def game-option-types [
+  :robot_max_rotate
+  :robot_cannon_max_rotate
+  :robot_radar_max_rotate
+  :robot_min_acceleration
+  :robot_max_acceleration
+  :robot_start_energy
+  :robot_max_energy
+  :robot_energy_levels
+  :shot_speed
+  :shot_min_energy
+  :shot_max_energy
+  :shot_energy_increase_speed
+  :timeout
+  :debug_level
+  :send_robot_coordinates])
+
+(def options (ref {}))
+
+(defn message [m & rest]
+  (println (str "Print " m rest)))
+
+(defn robot-initialize [[first-round]]
+  (if first-round
+    (println "Name kabot")))
+
+(defn robot-set-option
+  [[option-number value]]
+  (let [option-key (get
+                    game-option-types
+                    (Integer/parseInt option-number))
+        option-val (Double/parseDouble value)]
+    (dosync
+     (alter options (fn [opts] (assoc opts option-key option-val))))
+    (message (deref options))))
+   
+(defn process-input [m]
+  (let [tokens        (seq (.split m " "))
+        function-name (first tokens)
+        args          (next tokens)]
+    (message (str function-name " " args))
+    (cond
+      (= function-name "Initialize") (robot-initialize args)
+      (= function-name "GameOption") (robot-set-option args)
+      :else (message (str function-name " not implemented")))))
+
+(loop []
+  (let [in (read-line)]
+    (if (not (nil? in))
+      (do
+        (process-input in)
+        (recur)))))
+</pre>
+
+This is pretty trivial at the moment. My basic design is to have the main thread deal with all of the I/O and updating a global state object, while another thread deals with analyzing this state and figuring out what to do. I haven't decided on any concrete strategies yet but for the first contest it'll probably be pretty stupid. 
+
+A few fun things to note: clojure provides very simple interop with Java classes and methods. For example, `(.split m " ")` calls the `split` method on `m`, which is actually just a Java `String`. The result of that is a `String[]`, which isn't too useful in clojure so we immediately wrap it in a `seq`, which is sort of like a lazy `cons` list. Another example of this really trivial interop is the number parsing done in `robot-set-option`. I figured this out only after about an hour of thrashing about trying to figure out why passing a string as a vector index wasn't DWIMing like it does in perl. This is another example of why I need to do this project in another language. Perl has rotted my brain.
+
+By the way, if there are things that I'm doing in this code that aren't idomatic clojure, please correct me. I just started learning today, after all. I found a pretty good [tutorial][] which has guided me through basic types and stuff, but shortly I'll be branching beyond that into threading and agents and other fun things that it doesn't cover very well.
+
+[Rentrak]:          http://www.rentrak.com
+[RealTimeBattle]:   http://realtimebattle.sourceforge.net/
+[Clojure]:          http://clojure.org/
+[bot_construction]: http://realtimebattle.sourceforge.net/Documentation/RealTimeBattle-4.html
+[tutorial]:         http://java.ociweb.com/mark/clojure/article.html

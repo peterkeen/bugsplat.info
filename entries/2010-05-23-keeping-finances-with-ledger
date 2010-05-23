@@ -94,7 +94,7 @@ $ ledger -f ~/Documents/blog/static/ledger.sample.txt -r reg checking
 2010/05/22 Pizzicato            Expenses:Food:Lunch          $-7.90      $721.58
 </pre>
 
-Ledger will abbreviate account names as necesary when printing to make it fit in 80 columns. If you have a wider terminal you can pass the `-w` option to make it fit to 132 columns.
+Ledger will abbreviate account names as necessary when printing to make it fit in 80 columns. If you have a wider terminal you can pass the `-w` option to make it fit to 132 columns.
 
 The power of ledger really comes into focus when you have more data available. One of the most interesting reports that I run gives me an idea of how I'm doing month-to-month by showing how much my assets have changed (negative numbers are better, in this case): `ledger -MAn reg income expenses liabilities`. The `-M` option groups transactions by month, `-A` will show the running average in the second column. By default it will show the running total. `-n` will group all transactions together, instead of showing one subtotal for each account. It's sort of boring with the sample file, though:
 

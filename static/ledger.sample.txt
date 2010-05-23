@@ -1,0 +1,37 @@
+2010/05/20 * Opening Balances
+    Assets:Checking                          $500.00
+    Liabilities:Amex                         $-10.00
+    Equity
+
+2010/05/21 * Salary
+    Assets:Checking                        $1,000.00
+    Expenses:Taxes:Federal                   $250.00
+    Expenses:Taxes:State                     $100.00
+    Expenses:Taxes:Social Security            $80.00
+    Expenses:Insurance:Medical                $20.00
+    Expenses:Insurance:Dental                  $2.00
+    Income:Salary                         $-1,452.00
+
+2010/05/21 Rent
+    Expenses:Rent                            $600.00
+    Assets:Checking
+
+2010/05/21 Pacific Power
+    Expenses:Utils:Electric                   $61.75
+    Assets:Checking
+
+2010/05/21 * AT&T Wireless
+    Expenses:Cell Phone                       $88.46
+    Assets:Checking
+
+2010/05/22 NW Natural
+    Expenses:Utils:Gas                        $20.31
+    Assets:Checking
+
+2010/05/22 Pizzicato
+    Expenses:Food:Lunch                        $7.90
+    Assets:Checking
+
+2010/05/23 Comcast
+    Expenses:Cable                            $60.00
+    Liabilities:Amex

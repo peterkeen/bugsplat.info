@@ -1,0 +1,43 @@
+Title: User-space Process Managers
+Date:  2010-08-01 18:09:00
+Id:    12
+
+ * intro
+ * what they are
+ * why you'd want one
+ * what are the existing options (runit, bluepill, god, procer)
+ * why they all suck (except procer, but still)
+ * proclaunch
+ * example
+
+Modern web applications are complicated beasts. They've got database processes, web serving processes, and various tiers of actual application services. The first two generally take care of themselves. PostgreSQL, MySQL, Apache, Nginx, lighttpd, they all have well-understood ways of starting and keeping themselves up and running. But what do you do if you have a bunch of processes that you need to keep running that *aren't* well understood? What if they're well-understood to crash once in a while and you don't want to have to babysit them? You need a *user space process manager*. Zed Shaw seems to have coined this term specifically for the [Mongrel2 manual][], and it describes pretty accurately what you'd want to have happen. Some user-space program running above init that can launch your processes and start them again if they stop. Oh, and it'd be nice if it were sysadmin-friendly. Oh, and if it could automatically detect code changes and restart that'd be nifty too.
+
+There are quite a few of these things out there, and as Zed points out all of them suck to various degrees. Here's a list of just a few that I've come across. If I slight your favorite system, feel free to leave some feedback or email me.
+
+* **[runit]**
+    We actually use runit at work quite a bit. It's... interesting. Essentially you control it through specially-laid-out directories full of named pipes and control files and whatnot. The learning curve is rather steep, especially since it cannot control things that are already daemons, which flies in the face of everything Unix. It's also bizzarely difficult to get started, since it can't daemonize itself.
+
+* **[God]**
+    God is a process manager written in ruby. You configure everything with an internal ruby DSL and it takes care of the rest. It'll even kill things when they start taking up too much memory, which is nice, and it looks pretty extensible. Unfortunately, it alos looks kind of complicated. You have to have ruby loaded, you have to write your config in ruby, and it's way of loading configs is sort of weird. Oh, and it has memory leaks.
+
+* **[bluepill]**
+    Bluepill was written in reaction to god's shortcomings. It's also written in ruby, it's got a ruby DSL, but some things are slightly different. Mostly it's similar to God but without the memory leak, and without the nice notification support.
+
+* **[monit]**
+    The industrial-sized solution, monit seems to compete in the same space as Nagios, except with process management tacked on. Big web interface, mostly for whole-system management. I haven't personally tried it.
+
+* **[supervisord]**
+    Written in python, supervisord looks more like what we're looking for. It's specifically written for tracking application-level processes. I haven't personally tried it but I've heard nice things. However, the config system looks pretty intimidating, and it doesn't look to have a nice system for managing dynamic configs.
+
+* **[procer]**
+    Procer is what started me on this whole adventure. After struggling with runit for almost an entire week, procer was a breath of fresh air. It is structured in the same way as runit, as a directory full of directories full of files. The most basic config is just a directory containing a `run` script that daemonizes and writes a pid to the path that the `pid_file` file contains. Procer can also handle dependencies between services, which is nice if process A just *has* to be running for process B to even start.
+
+Of all of these, procer seems like the easiest to understand and get going with. However, it's sort of a side project inside of the mongrel2 effort and was written specifically for the manual. Also, it doesn't really handle the code changing underneath it. You have to kill off your processes and let procer restart them for you.
+
+
+[Mongrel2 manual]: http://mongrel2.org/doc/tip/docs/manual/book.wiki
+[God]:             http://god.rubyforge.org/
+[bluepill]:        http://github.com/arya/bluepill
+[monit]:           http://mmonit.com/monit/
+[supervisord]:     http://supervisord.org/
+[procer]:          http://mongrel2.org/doc/tip/docs/manual/book.wiki#x1-380004.1.1

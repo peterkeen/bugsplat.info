@@ -1,11 +1,5 @@
 Title: Resume
 
-### Skills
-
-* Programming Languages: Perl, C++, HTML/CSS, Javascript, Java, Python, Ruby
-* Operating Systems: Linux, Mac OS X, Windows 2000/XP
-* Databases: PostgreSQL, MySQL
-
 ### Experience ##
 
 #### Software Developer, January 2007 - Current ###
@@ -77,6 +71,12 @@ Graduated December 2006
 
 * Completed a year-long project for a major bank in Milwaukee that implemented a
   debit card reward processing and redemption system using ASP.NET, VB.NET and SQL Server 2000.
+  
+### Skills
+
+* Programming Languages: Perl, C++, HTML/CSS, Javascript, Java, Python, Ruby
+* Operating Systems: Linux, Mac OS X, Windows 2000/XP
+* Databases: PostgreSQL, MySQL
 
 ### Achievements and Service
 

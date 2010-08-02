@@ -14,6 +14,8 @@ use XML::Atom::SimpleFeed;
 
 use Getopt::Long;
 
+use constant FRONT_PAGE_COUNT => 5;
+
 GetOptions(
     "d|dry-run" => \my $dry_run,
     "l|live"  =>   \my $live,
@@ -53,7 +55,7 @@ my $count = 0;
 
 for my $entry ( sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title}} @blog_entries ) {
     my $html = process_and_write_blog_entry($entry, $link_list_html);
-    if ($count++ < 10) {
+    if ($count++ < FRONT_PAGE_COUNT) {
         $blog_entries_html .= $html
     }
     $archive_list_html .= process_template('archive_entry', $entry);

@@ -38,8 +38,8 @@ my $atom = XML::Atom::SimpleFeed->new(
     author => { name => 'Pete Keen', email => 'pete@bugsplat.info' },
 );
 
-my @blog_entries = grep { defined $_->{Date} } @entries;
-my @non_blog_entries = grep { !defined $_->{Date} } @entries;
+my @blog_entries = grep { defined $_->{Date} && !defined $_->{Hold} } @entries;
+my @non_blog_entries = grep { !defined $_->{Date} && !defined $_->{Hold} } @entries;
 
 my $blog_entries_html = "";
 my $link_list_html = "";

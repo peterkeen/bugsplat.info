@@ -43,4 +43,4 @@ That being said, I started rolling my own user space process manager yesterday. 
 [supervisord]:     http://supervisord.org/
 [procer]:          http://mongrel2.org/doc/tip/docs/manual/book.wiki#x1-380004.1.1
 [runit]:           http://smarden.org/runit/
-[proclaunch]:      http://github.com/zrail/proclaunch
+[proclaunch]:      http://github.com/peterkeen/proclaunch

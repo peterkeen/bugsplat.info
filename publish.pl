@@ -59,14 +59,21 @@ for my $entry ( sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title}}
         $blog_entries_html .= $html
     }
     $archive_list_html .= process_template('archive_entry', $entry);
+    my $full_url = 'http://bugsplat.info/' . $entry->{Path};
     $atom->add_entry(
         title     => $entry->{Title},
-        link      => 'http://bugsplat.info/' . $entry->{Path},
+        link      => $full_url,
         id        => id_for_entry($entry),
         published => atom_date_for_entry($entry),
         updated   => atom_date_for_entry($entry),
         content   => $entry->{Content},
     );
+    write_file("$ENV{PWD}/out/" . $entry->{Id} . ".html", process_template(
+        'short',
+        {
+            FullUrl => $full_url
+        }
+    ));
 }
 
 for my $entry ( sort { $a->{Order} <=> $b->{Order} } @non_blog_entries ) {

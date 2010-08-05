@@ -64,8 +64,9 @@ for my $entry ( sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title}}
     $archive_list_html .= process_template(
         'archive_entry',
         {
-            Date => short_date_for_entry($entry),
+            Date  => short_date_for_entry($entry),
             Title => $entry->{Title},
+            Path  => $entry->{Path},
         }
     );
 

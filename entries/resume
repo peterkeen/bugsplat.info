@@ -26,6 +26,11 @@ Title: Resume
   [Gearman](http://gearman.org) which will form the core for all new
   distributed or delayed job processing company-wide.
 
+* Designed a new product from scratch with another developer on a three
+  month contract, focusing on the backend data processing. Built a simple
+  pattern for specifiying summary tables that generates all needed code
+  from a DSL-like specification.
+
 * Write one-time and repeatable data extraction and analysis programs
   to support statistical analysis of televsion viewing behavior.
 

@@ -102,7 +102,7 @@ write_file(
     process_template(
         'main',
         {
-            Content => $blog_entries_html,
+            Content => $blog_entries_html . process_template('archive_link'),
             LinkList => $link_list_html,
         }
     )

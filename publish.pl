@@ -53,6 +53,8 @@ for my $entry ( sort { $a->{Order} <=> $b->{Order} } @non_blog_entries ) {
 
 my $count = 0;
 
+my @htaccess_rules;
+
 for my $entry ( sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title}} @blog_entries ) {
     my $html = process_and_write_blog_entry($entry, $link_list_html);
     if ($count++ < FRONT_PAGE_COUNT) {
@@ -68,13 +70,11 @@ for my $entry ( sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title}}
         updated   => atom_date_for_entry($entry),
         content   => $entry->{Content},
     );
-    write_file("$ENV{PWD}/out/" . $entry->{Id} . ".html", process_template(
-        'short',
-        {
-            FullUrl => $full_url
-        }
-    ));
+
+    push @htaccess_rules, "RewriteRule ^" . $entry->{Id} . '$ ' . ${full_url} . ' [R]';
 }
+
+write_file("$ENV{PWD}/out/.htaccess", join("\n", "RewriteEngine on", @htaccess_rules));
 
 for my $entry ( sort { $a->{Order} <=> $b->{Order} } @non_blog_entries ) {
     write_file("$ENV{PWD}/out/" . $entry->{Path}, process_template(

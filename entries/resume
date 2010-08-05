@@ -22,6 +22,10 @@ Title: Resume
   [Parse::RecDescent](http://search.cpan.org/dist/Parse-RecDescent) to
   enable internal users to query the view repository.
 
+* Designed and deployed a system for distributed job processing using
+  [Gearman](http://gearman.org), which will form the core for all new
+  distributed or delayed job processing company-wide.
+
 * Write one-time and repeatable data extraction and analysis programs
   to support statistical analysis of televsion viewing behavior.
 

@@ -60,7 +60,15 @@ for my $entry ( sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title}}
     if ($count++ < FRONT_PAGE_COUNT) {
         $blog_entries_html .= $html
     }
-    $archive_list_html .= process_template('archive_entry', $entry);
+
+    $archive_list_html .= process_template(
+        'archive_entry',
+        {
+            Date => short_date_for_entry($entry),
+            Title => $entry->{Title},
+        }
+    );
+
     my $full_url = 'http://bugsplat.info/' . $entry->{Path};
     $atom->add_entry(
         title     => $entry->{Title},
@@ -131,6 +139,7 @@ if ($dry_run) {
     system("open $ENV{PWD}/out/index.html");
 } elsif ($live) {
     print "Pushing to live\n";
+    system("scp out/.* kodos:/var/web/bugsplat.info/");
     system("scp -r out/* kodos:/var/web/bugsplat.info/");
     system("open http://bugsplat.info");
 } else {
@@ -147,6 +156,13 @@ sub atom_date_for_entry
 {
     my $date = shift->{Date}->clone;
     return DateTime::Format::W3CDTF->new()->format_datetime($date);
+}
+
+sub short_date_for_entry
+{
+    my $date = shift->{Date}->clone();
+    $date->set_time_zone('America/Los_Angeles');
+    return $date->format_cldr("YYYY-MM-dd");
 }
 
 sub parse_one_file

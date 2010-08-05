@@ -30,11 +30,11 @@ a:active {
 #header
 {
 	background: #fff;
-	padding: 20px;
+	padding: 20px 0;
+    margin: 0 0 0 28px;
 }
 
-#header h1 { margin: 0; }
-
+#header h1 { font-family: 'Droid Sans', helvetica, arial, sans-serif; margin: 0; font-size: 230% }
 
 #content-container
 {
@@ -53,7 +53,7 @@ a:active {
 	display: inline;
 }
 
-#content h2 { margin: 0; }
+#content h2 { font-family: 'Droid Sans', helvetica, arial, sans-serif; margin: 0; }
 
 #aside
 {
@@ -62,13 +62,14 @@ a:active {
 	padding: 20px 0;
 	margin: 0 20px 0 0;
 	display: inline;
+    font-family: 'Droid Sans', helvetica, arial, sans-serif;
 }
 
-#aside h3 { margin: 0; }
+#aside h3 { font-family: 'Droid Sans', helvetica, arial, sans-serif;  margin: 0; }
 #aside ul { margin: 0; padding: 0; }
 #aside ul li {
   list-style-type: none;
-  margin: 0;
+  margin: 0.5em 0;
   padding: 0;
 }
 
@@ -85,4 +86,23 @@ a:active {
 div.entry
 {
   margin-bottom: 2em;
+}
+
+hr.separator
+{
+  margin-bottom: 3em;
+  margin-top: 2em;
+  display: block;
+  color: #999;
+  border: 0;
+  text-align: center;
+}
+
+hr.separator:after {
+  content: "....";
+  letter-spacing: 2em;
+}
+
+p.date {
+  font-size: 75%;
 }

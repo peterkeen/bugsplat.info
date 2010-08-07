@@ -1,0 +1,13 @@
+Title: Blog Generator Updates
+Date:  2010-08-06 23:04:47
+Id:    13
+
+I've made some small changes to the way bugsplat.info is generated. First, I refactored `publish.pl` quite extensively. Instead of being a huge mess of spaghetti-perl, it's nicely factored out into functions, each one doing as little as possible. It got a little longer, but I think it's worth the tradeoff in readability.
+
+Second, I added self-generated shortlinks. Each post on the site has an internal id, which is actually a monotonically increasing sequence number. The short link for a post is `http://bugsplat.info/<id>`. For this post, it's [http://bugsplat.info/13](http://bugsplat.info/13). These are implemented as `mod_rewrite` rules in `.htaccess` which are generated using a template, just like every other piece of content on the site.
+
+Third, I wrote a new convenience script named `next-entry.pl`, the idea for which I shamelessly stole from [technosorcery.net](). Basically, it'll prompt me for a post title using bash's `read` function, then generate a URL and some date strings, as well as comb through the `entries/` directory to find the highest `id`, then increase it by one. It writes all this to a file and then opens `emacsclient` right at the correct spot to start typing an entry.
+
+Fourth, I worked on the CSS a little bit. Hopefully it looks a little snazzier than it did before.
+
+[technosorcery.net]: http://technosorcery.net/2010/04/10/helper_script_for_creating_posts_with_www__staticblog.html

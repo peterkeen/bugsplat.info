@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-
 use strict;
 
 use Carp;
@@ -16,6 +15,9 @@ use Getopt::Long;
 
 use constant FRONT_PAGE_COUNT => 5;
 
+my $REMOTE_SCP_PATH = 'kodos:/var/web/bugsplat.info';
+my $OUT_DIR = $ENV{PWD} . '/out';
+
 GetOptions(
     "d|dry-run" => \my $dry_run,
     "l|live"  =>   \my $live,
@@ -26,125 +28,189 @@ if (! ($dry_run || $live) ) {
     exit 1;
 }
 
-my @entries;
+my $entries = find_all_entries();
 
-File::Find::find(sub {
-    return unless $_;
-    return if $_ =~ /^[#\.]/;
-    push @entries, parse_one_file($File::Find::name);
-}, "$ENV{PWD}/entries/");
+write_index_and_blog_entries($entries);
+write_pages($entries);
+write_archive($entries);
+write_atom_feed($entries);
+write_htaccess_file($entries);
+copy_static_files();
+sync_to_remote() unless $dry_run;
+open_browser($dry_run);
 
-my $atom = XML::Atom::SimpleFeed->new(
-    title => 'Bugsplat',
-    link  => 'http://bugsplat.info',
-    author => { name => 'Pete Keen', email => 'pete@bugsplat.info' },
-);
+sub find_all_entries
+{
+    my @entries;
+    File::Find::find(sub {
+        return unless $_;
+        return if $_ =~ /^[#\.]/;
+        push @entries, parse_one_file($File::Find::name);
+    }, "$ENV{PWD}/entries/");
 
-my @blog_entries = grep { defined $_->{Date} && !defined $_->{Hold} } @entries;
-my @non_blog_entries = grep { !defined $_->{Date} && !defined $_->{Hold} } @entries;
-
-my $blog_entries_html = "";
-my $link_list_html = "";
-my $archive_list_html = "";
-
-for my $entry ( sort { $a->{Order} <=> $b->{Order} } @non_blog_entries ) {
-    $link_list_html .= process_template('link_list_entry', $entry);
+    return \@entries;
 }
 
-my $count = 0;
+sub write_index_and_blog_entries
+{
+    my $entries = shift;
+    my $link_list = link_list($entries);
+    my $count = 0;
 
-my @htaccess_rules;
-
-for my $entry ( sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title}} @blog_entries ) {
-    my $html = process_and_write_blog_entry($entry, $link_list_html);
-    if ($count++ < FRONT_PAGE_COUNT) {
-        $blog_entries_html .= $html
+    my $blog_entries_html = '';
+    for my $entry ( blog_entries($entries) ) {
+        my $html = process_and_write_blog_entry($entry, $link_list);
+        if ($count++ < FRONT_PAGE_COUNT) {
+            $blog_entries_html .= $html
+        }
     }
 
-    $archive_list_html .= process_template(
-        'archive_entry',
-        {
-            Date  => short_date_for_entry($entry),
-            Title => $entry->{Title},
-            Path  => $entry->{Path},
-        }
+    process_and_write_file(
+        'index.html',
+        'main',
+        Content => $blog_entries_html . process_template('archive_link'),
+        LinkList => $link_list,
     );
-
-    my $full_url = 'http://bugsplat.info/' . $entry->{Path};
-    $atom->add_entry(
-        title     => $entry->{Title},
-        link      => $full_url,
-        id        => id_for_entry($entry),
-        published => atom_date_for_entry($entry),
-        updated   => atom_date_for_entry($entry),
-        content   => $entry->{Content},
-    );
-
-    push @htaccess_rules, "RewriteRule ^" . $entry->{Id} . '$ ' . ${full_url} . ' [R]';
 }
 
-write_file("$ENV{PWD}/out/.htaccess", join("\n", "RewriteEngine on", @htaccess_rules));
+sub write_pages
+{
+    my $entries = shift;
+    my $link_list = link_list($entries);
 
-for my $entry ( sort { $a->{Order} <=> $b->{Order} } @non_blog_entries ) {
-    write_file("$ENV{PWD}/out/" . $entry->{Path}, process_template(
-        'main',
-        {
+    for my $entry ( non_blog_entries($entries) ) {
+        process_and_write_file(
+            $entry->{Path},
+            'main',
             Content => process_template('entry', { %$entry, PathSuffix => ''}),
             Title => $entry->{Title}. " - ",
-            LinkList => $link_list_html,
-        },
-    ));
+            LinkList => $link_list,
+        );
+    }
 }
 
-print "Writing index\n";
-write_file(
-    "$ENV{PWD}/out/index.html",
-    process_template(
+sub write_archive
+{
+    my $entries = shift;
+    my $link_list = link_list($entries);
+    my $archive_html = "";
+
+    for my $entry ( blog_entries($entries) ) {
+        $archive_html .= process_template(
+            'archive_entry',
+            {
+                Date  => short_date_for_entry($entry),
+                Title => $entry->{Title},
+                Path  => $entry->{Path},
+             }
+        );
+    }
+
+    process_and_write_file(
+        "archive.html",
         'main',
-        {
-            Content => $blog_entries_html . process_template('archive_link'),
-            LinkList => $link_list_html,
-        }
-    )
-);
+        Title => 'Archive - ',
+        Content => $archive_html,
+        LinkList => $link_list,
+    );
+}
 
-print "Writing archive\n";
-write_file(
-    "$ENV{PWD}/out/archive.html",
-    process_template(
-        'main',
-        {
-            Title => 'Archive - ',
-            Content => $archive_list_html,
-            LinkList => $link_list_html,
-        }
-    )
-);
+sub write_atom_feed
+{
+    my $atom = XML::Atom::SimpleFeed->new(
+        title => 'Bugsplat',
+        link  => 'http://bugsplat.info',
+        author => { name => 'Pete Keen', email => 'pete@bugsplat.info' },
+    );
 
-print "Writing atom feed\n";
-write_file(
-    "$ENV{PWD}/out/index.xml",
-    $atom->as_string(),
-);
+    for my $entry ( blog_entries($entries) ) {
+        $atom->add_entry(
+            title     => $entry->{Title},
+            link      => canonical_url($entry),
+            id        => id_for_entry($entry),
+            published => atom_date_for_entry($entry),
+            updated   => atom_date_for_entry($entry),
+            content   => $entry->{Content},
+        );
+    }
 
-print "Copying static files\n";
+    write_file(
+        "$OUT_DIR/index.xml",
+        $atom->as_string(),
+    );
+}
 
-File::Find::find(sub {
-    return unless -f $File::Find::name;
-    print $File::Find::name . "\n";
-    copy($File::Find::name, "$ENV{PWD}/out/" . basename($File::Find::name));
-}, "$ENV{PWD}/static/");
+sub canonical_url
+{
+    my $entry = shift;
+    return 'http://bugsplat.info/' . $entry->{Path};
+}
 
-if ($dry_run) {
-    print "Opening browser\n";
-    system("open $ENV{PWD}/out/index.html");
-} elsif ($live) {
+sub write_htaccess_file
+{
+    my $entries = shift;
+    my $htaccess = <<HERE;
+RewriteEngine on
+HERE
+    for my $entry ( blog_entries($entries) ) {
+        $htaccess .= process_template('htaccess_rule', {
+            Id      => $entry->{Id},
+            FullUrl => canonical_url($entry),
+        });
+    }
+
+    write_file("$OUT_DIR/.htaccess", $htaccess);
+}
+
+sub copy_static_files
+{
+    File::Find::find(sub {
+        return unless -f $File::Find::name;
+        print $File::Find::name . "\n";
+        copy($File::Find::name, "$OUT_DIR/" . basename($File::Find::name));
+    }, "$ENV{PWD}/static/");
+}
+
+sub sync_to_remote
+{
     print "Pushing to live\n";
-    system("scp out/.* kodos:/var/web/bugsplat.info/");
-    system("scp -r out/* kodos:/var/web/bugsplat.info/");
-    system("open http://bugsplat.info");
-} else {
-    print "Doing nothing?\n";
+    system("scp out/.htaccess $REMOTE_SCP_PATH");
+    system("scp -r out/* $REMOTE_SCP_PATH");
+}
+
+sub open_browser
+{
+    my $dry_run = shift;
+    my $path = $dry_run ? "$OUT_DIR/index.html" : 'http://bugsplat.info';
+    system("open $path");
+}
+
+sub link_list
+{
+    my $entries = shift;
+    my $html = "";
+    for my $entry ( non_blog_entries($entries) ) {
+        $html .= process_template('link_list_entry', $entry);
+    }
+    return $html;
+}
+
+sub blog_entries
+{
+    my $entries = shift;
+    return
+        sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title} }
+        grep { defined $_->{Date} && !defined $_->{Hold} }
+        @$entries;
+}
+
+sub non_blog_entries
+{
+    my $entries = shift;
+    return
+        sort { $a->{Order} <=> $b->{Order} }
+        grep { !defined $_->{Date} && !defined $_->{Hold} }
+        @$entries;
 }
 
 sub id_for_entry
@@ -228,16 +294,22 @@ sub process_and_write_blog_entry
 
     my $entry_html = process_template('entry', { %$entry, Date => $date, PathSuffix => '#disqus_thread'});
     my $comments_html = process_template('comments', {Dryrun => $dry_run ? 1 : 0});
-    my $page_html = process_template(
-        'main', {
-            Content => $entry_html . $comments_html,
-            Title => $entry->{Title} . " - ",
-            LinkList => $link_list_html,
-        }
+
+    process_and_write_file(
+        $entry->{Path},
+        'main',
+         Content => $entry_html . $comments_html,
+         Title => $entry->{Title} . " - ",
+         LinkList => $link_list_html,
     );
 
-    my $filename = $ENV{PWD} . "/out/" . $entry->{Path};
-    write_file($filename, $page_html);
-
     return $entry_html;
+}
+
+sub process_and_write_file
+{
+    my ($page_name, $template_name, %params) = @_;
+    my $content = process_template($template_name, \%params);
+    write_file("$OUT_DIR/$page_name", $content);
+    return $content;
 }

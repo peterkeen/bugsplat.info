@@ -34,6 +34,10 @@ Title: Resume
 * Write one-time and repeatable data extraction and analysis programs
   to support statistical analysis of televsion viewing behavior.
 
+* Implemented an experimental perl-based framework on top of
+  [Hadoop](http://hadoop.apache.org/) and HDFS that was used to test some
+  performance hypotheses.
+
 * Worked with another developer and the system administration team to
   convert the entire company from subversion to git. Internal repos are
   hosted using [gitolite](http://github.com/sitaramc/gitolite).

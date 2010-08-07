@@ -68,6 +68,7 @@ sub write_index_and_blog_entries
     process_and_write_file(
         'index.html',
         'main',
+        ShortUrl => 'http://bugsplat.info',
         Content => $blog_entries_html . process_template('archive_link'),
         LinkList => $link_list,
     );
@@ -82,6 +83,7 @@ sub write_pages
         process_and_write_file(
             $entry->{Path},
             'main',
+            ShortUrl => short_url($entry),
             Content => process_template('entry', { %$entry, PathSuffix => ''}),
             Title => $entry->{Title}. " - ",
             LinkList => $link_list,
@@ -109,6 +111,7 @@ sub write_archive
     process_and_write_file(
         "archive.html",
         'main',
+        ShortUrl => 'http://bugsplat.info/archive.html',
         Title => 'Archive - ',
         Content => $archive_html,
         LinkList => $link_list,
@@ -144,6 +147,16 @@ sub canonical_url
 {
     my $entry = shift;
     return 'http://bugsplat.info/' . $entry->{Path};
+}
+
+sub short_url
+{
+    my $entry = shift;
+    return $entry->{Id} ?
+        'http://bugsplat.info/' . $entry->{Id} :
+        canonical_url($entry)
+    ;
+
 }
 
 sub write_htaccess_file
@@ -298,9 +311,10 @@ sub process_and_write_blog_entry
     process_and_write_file(
         $entry->{Path},
         'main',
-         Content => $entry_html . $comments_html,
-         Title => $entry->{Title} . " - ",
-         LinkList => $link_list_html,
+        ShortUrl => short_url($entry),
+        Content => $entry_html . $comments_html,
+        Title => $entry->{Title} . " - ",
+        LinkList => $link_list_html,
     );
 
     return $entry_html;

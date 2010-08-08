@@ -4,7 +4,8 @@ use strict;
 use Carp;
 use DateTime::Format::Natural;
 use DateTime::Format::W3CDTF;
-use File::Basename 'basename';
+use File::Basename qw/ basename dirname /;
+use File::Path qw/ make_path /;
 use File::Find;
 use File::Slurp qw/ read_file write_file /;
 use File::Copy;
@@ -30,6 +31,7 @@ if (! ($dry_run || $live) ) {
 
 my $entries = find_all_entries();
 
+clean_out_dir();
 write_index_and_blog_entries($entries);
 write_pages($entries);
 write_archive($entries);
@@ -49,6 +51,11 @@ sub find_all_entries
     }, "$ENV{PWD}/entries/");
 
     return \@entries;
+}
+
+sub clean_out_dir
+{
+    system("rm -rf $OUT_DIR");
 }
 
 sub write_index_and_blog_entries
@@ -137,7 +144,7 @@ sub write_atom_feed
         );
     }
 
-    write_file(
+    mkdirs_and_write_file(
         "$OUT_DIR/index.xml",
         $atom->as_string(),
     );
@@ -172,7 +179,7 @@ HERE
         });
     }
 
-    write_file("$OUT_DIR/.htaccess", $htaccess);
+    mkdirs_and_write_file("$OUT_DIR/.htaccess", $htaccess);
 }
 
 sub copy_static_files
@@ -202,7 +209,7 @@ sub link_list
 {
     my $entries = shift;
     my $html = "";
-    for my $entry ( non_blog_entries($entries) ) {
+    for my $entry ( link_list_entries($entries) ) {
         $html .= process_template('link_list_entry', $entry);
     }
     return $html;
@@ -213,16 +220,31 @@ sub blog_entries
     my $entries = shift;
     return
         sort { $b->{Date} cmp $a->{Date} || $a->{Title} cmp $b->{Title} }
-        grep { defined $_->{Date} && !defined $_->{Hold} }
+        grep { defined $_->{Date} && !should_hold($_) }
         @$entries;
+}
+
+sub should_hold
+{
+    my $entry = shift;
+    return $live && defined $entry->{Hold}
 }
 
 sub non_blog_entries
 {
     my $entries = shift;
     return
+        sort { $a->{Title} cmp $b->{Title} }
+        grep { !defined $_->{Date} && !should_hold($_) }
+        @$entries;
+}
+
+sub link_list_entries
+{
+    my $entries = shift;
+    return
         sort { $a->{Order} <=> $b->{Order} }
-        grep { !defined $_->{Date} && !defined $_->{Hold} }
+        grep { defined $_->{Order} && !defined $_->{Date} && !should_hold($_) }
         @$entries;
 }
 
@@ -324,6 +346,14 @@ sub process_and_write_file
 {
     my ($page_name, $template_name, %params) = @_;
     my $content = process_template($template_name, \%params);
-    write_file("$OUT_DIR/$page_name", $content);
+    mkdirs_and_write_file("$OUT_DIR/$page_name", $content);
     return $content;
+}
+
+sub mkdirs_and_write_file
+{
+    my ($filename, $content) = @_;
+    my $dirs = dirname($filename);
+    make_path($dirs);
+    write_file($filename, $content);
 }

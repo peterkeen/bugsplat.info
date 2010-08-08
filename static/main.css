@@ -65,9 +65,9 @@ a:active {
     font-family: 'Droid Sans', helvetica, arial, sans-serif;
 }
 
-h2 { font-family: 'Droid Sans', helvetica, arial, sans-serif; margin: 0; }
-h3 { font-family: 'Droid Sans', helvetica, arial, sans-serif; margin: 1em 0; }
-h4 { font-family: 'Droid Sans', helvetica, arial, sans-serif; margin: 1em 0; }
+h2 { font-family: 'Droid Sans', helvetica, arial, sans-serif; margin: 0; padding-bottom: 5px; }
+h3 { font-family: 'Droid Sans', helvetica, arial, sans-serif; margin: 1em 0; padding-bottom: 5px; }
+h4 { font-family: 'Droid Sans', helvetica, arial, sans-serif; margin: 1em 0; padding-bottom: 5px; }
 
 #aside ul { margin: 0; padding: 0; }
 #aside ul li {

@@ -1,7 +1,6 @@
 Title: Managing Your Processes with ProcLaunch.
 Date:  2010-08-08 12:30:37
 Id:    c385f
-Hold:  1
 
 I finally got the chance to work some more on [proclaunch][], my implementation of a *user space process manager*, like runit or mongrel or god. I wrote up a big overview of the currently available options [previously][uspm], but in summary: all of the existing options suck. They're either hard to setup, have memory leaks, have a weird configuration language, or are just plain strange. The only viable option was [procer][], and even that was just sort of a tech demo put together for the [Mongrel2 manual][].
 

@@ -3,24 +3,24 @@ body
     font-family: georgia, times, serif;
 }
 
-h4.print-only { display: none; }
-
 a:link { 
-	color: #5555AA;
+	color: #000;
 	text-decoration: none;
 	}
 a:visited { 
-	color: #5555AA;
+	color: #000;
 	text-decoration: none;
 	}
 a:hover { 
-	color: #8888AA;
+	color: #000;
 	text-decoration: underline;
 	}
 a:active { 
-	color: #5555AA;
+	color: #000;
 	text-decoration: underline;
 	}
+
+.permalink { display: none; }
 
 #container
 {
@@ -33,7 +33,7 @@ a:active {
 {
 	background: #fff;
 	padding: 20px 0;
-    margin: 0 0 0 28px;
+    margin: 0;
 }
 
 #header h1 { font-family: 'Droid Sans', helvetica, arial, sans-serif; margin: 0; font-size: 230% }
@@ -49,7 +49,7 @@ a:active {
 {
 	clear: left;
 	float: left;
-	width: 560px;
+	width: 800px;
 	padding: 20px 0;
 	margin: 0 0 0 30px;
 	display: inline;
@@ -59,24 +59,12 @@ a:active {
 
 #aside
 {
-	float: right;
-	width: 240px;
-	padding: 20px 0;
-	margin: 0 20px 0 0;
-	display: inline;
-    font-family: 'Droid Sans', helvetica, arial, sans-serif;
+  display:none;
 }
 
 h2 { font-family: 'Droid Sans', helvetica, arial, sans-serif; margin: 0; padding-bottom: 5px; }
 h3 { font-family: 'Droid Sans', helvetica, arial, sans-serif; margin: 1em 0; padding-bottom: 5px; }
 h4 { font-family: 'Droid Sans', helvetica, arial, sans-serif; margin: 1em 0; padding-bottom: 5px; }
-
-#aside ul { margin: 0; padding: 0; }
-#aside ul li {
-  list-style-type: none;
-  margin: 0.5em 0;
-  padding: 0;
-}
 
 #footer
 {

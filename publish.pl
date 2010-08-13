@@ -16,7 +16,7 @@ use Getopt::Long;
 
 use constant FRONT_PAGE_COUNT => 5;
 
-my $REMOTE_SCP_PATH = 'kodos:/var/web/bugsplat.info';
+my $REMOTE_SCP_PATH = 'bugsplat.info:/var/web/bugsplat.info';
 my $OUT_DIR = $ENV{PWD} . '/out';
 
 GetOptions(
@@ -194,8 +194,8 @@ sub copy_static_files
 sub sync_to_remote
 {
     print "Pushing to live\n";
-    system("scp out/.htaccess $REMOTE_SCP_PATH");
-    system("scp -r out/* $REMOTE_SCP_PATH");
+    system("rsync -av out/.htaccess $REMOTE_SCP_PATH");
+    system("rsync -rav out/* $REMOTE_SCP_PATH");
 }
 
 sub open_browser

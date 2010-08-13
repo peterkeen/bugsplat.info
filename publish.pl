@@ -269,9 +269,10 @@ sub short_date_for_entry
 
 sub parse_one_file
 {
+    $SIG{__DIE__} = sub { use Carp; confess @_ };
     my $file = shift;
-    my $stripped_file = $file . ".html";
     return () if -d $file;
+    my $stripped_file = $file . ".html";
     substr($stripped_file, 0, length("$ENV{PWD}/entries/"), '');
     my $contents = read_file($file);
     my $entry = parse_entry($contents);
@@ -283,9 +284,14 @@ sub parse_entry
 {
     my $raw_contents = shift;
     my ($headers, $content) = split(/\n\n/, $raw_contents, 2);
+    my ($prefold, $postfold) = split(/\n--fold--\n/, $content, 2);
+
     my %headers = map { split(/:\s+/, $_, 2) } split(/\n/, $headers);
-    $content ||= "";
-    $headers{Content} = markdown($content);
+    $postfold ||= "";
+
+    $headers{Prefold} = markdown($prefold);
+    $headers{Content} = markdown($prefold . "\n" . $postfold || "");
+
     if ($headers{Date}) {
         $headers{Date} = DateTime::Format::Natural->new(
             time_zone => 'America/Los_Angeles'
@@ -339,7 +345,15 @@ sub process_and_write_blog_entry
         LinkList => $link_list_html,
     );
 
-    return $entry_html;
+    return process_template(
+        'short_entry',
+        {
+            %$entry,
+            Date => $date,
+            PathSuffix => '#disqus_thread',
+            Content => $entry->{Prefold},
+        }
+    );
 }
 
 sub process_and_write_file

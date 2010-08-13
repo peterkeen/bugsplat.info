@@ -2,7 +2,13 @@ Title: Daemons are Our Picky, Temperamental Friends
 Date:  2010-08-01 18:09:00
 Id:    12
 
-Modern web applications are complicated beasts. They've got database processes, web serving processes, and various tiers of actual application services. The first two generally take care of themselves. PostgreSQL, MySQL, Apache, Nginx, lighttpd, they all have well-understood ways of starting and keeping themselves up and running. But what do you do if you have a bunch of processes that you need to keep running that *aren't* well understood? What if they're well-understood to crash once in a while and you don't want to have to babysit them? You need a *user space process manager*. Zed Shaw seems to have coined this term specifically for the [Mongrel2 manual][], and it describes pretty accurately what you'd want: some user-space program running above init that can launch your processes and start them again if they stop. Dropping privilages would be nice. Oh, and it'd be cool if it were sysadmin-friendly. Oh, and if it could automatically detect code changes and restart that'd be nifty too.
+Modern web applications are complicated beasts. They've got database processes, web serving processes, and various tiers of actual application services. The first two generally take care of themselves. PostgreSQL, MySQL, Apache, Nginx, lighttpd, they all have well-understood ways of starting and keeping themselves up and running.
+
+But what do you do if you have a bunch of processes that you need to keep running that *aren't* well understood? What if they're well-understood to crash once in a while and you don't want to have to babysit them? You need a *user space process manager*. Zed Shaw seems to have coined this term specifically for the [Mongrel2 manual][], and it describes pretty accurately what you'd want: some user-space program running above init that can launch your processes and start them again if they stop. Dropping privilages would be nice. Oh, and it'd be cool if it were sysadmin-friendly. Oh, and if it could automatically detect code changes and restart that'd be nifty too.
+
+[Mongrel2 manual]: http://mongrel2.org/doc/tip/docs/manual/book.wiki
+
+--fold--
 
 There are quite a few of these things out there, and as Zed points out all of them suck to various degrees. Here's a list of just a few that I've come across.
 
@@ -36,7 +42,6 @@ That being said, I started rolling my own user space process manager yesterday. 
 
 *Have I missed a process manager? Did I misrepresent one of them? Leave a comment and let me know.*
 
-[Mongrel2 manual]: http://mongrel2.org/doc/tip/docs/manual/book.wiki
 [God]:             http://god.rubyforge.org/
 [bluepill]:        http://github.com/arya/bluepill
 [monit]:           http://mmonit.com/monit/

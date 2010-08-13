@@ -8,6 +8,8 @@ I finally got the chance to work some more on [proclaunch][], my implementation 
 
 That's why I started putting together proclaunch. I need some of the features of runit, namely automatic restart, with none of the wackyness, and I wanted it to be easy to automatically configure. I also wanted it to be standalone so I wouldn't have to install a pre-alpha version of Mongrel2 just to manage my own processes.
 
+--fold--
+
 ### What of it?
 
 Grab the latest version off of github, unpack it, and run this in the unpacked directory:

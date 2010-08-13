@@ -4,6 +4,11 @@ Id:    10
 
 As some of you might know, [Twitter][] provides a [streaming API][twapi] that pumps all of the tweets for a given search to you as they happen. There are other stream variants, including a sample feed (a small percentage of all tweets), "Gardenhose", which is a stastically sound sample, and "Firehose", which is every single tweet. All of them. Not actually all that useful, since you have to have some pretty beefy hardware and a really nice connection to keep up. The filtered stream is much more interesting if you have a target in mind. Since there was such a hubbub about "Lost" a few weeks ago I figured I would gather relevant tweets and see what there was to see. In this first part I'll cover capturing tweets and doing a little basic analysis, and in the second part I'll go over some deeper analysis, including some pretty graphs!
 
+[Twitter]: http://twitter.com
+[twapi]:   http://apiwiki.twitter.com/Streaming-API-Documentation
+
+--fold--
+
 Capturing
 ---------
 
@@ -90,8 +95,6 @@ Ok, so now we have our word counts. Here's the top 26 words and phrases that peo
     
 In amongst all the tiny junk words, we have some really nice indicators that we can use in the next phase to filter to just the tweets that are actually talking about lost the tv show vs their lost kitten named Mittens. Interestingly, the phrase "you all everybody" only showed up 67 times. Sad.
 
-[Twitter]: http://twitter.com
-[twapi]:   http://apiwiki.twitter.com/Streaming-API-Documentation
 [twmine]:  http://gist.github.com/423346
 [file]:    http://dl.dropbox.com/u/5193213/lost-finale-tweets.txt.gz
 [twmine-capture]: http://gist.github.com/423346#file_capture_tweets.pl

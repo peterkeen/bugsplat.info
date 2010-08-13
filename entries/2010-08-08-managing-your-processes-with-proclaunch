@@ -8,6 +8,13 @@ I finally got the chance to work some more on [proclaunch][], my implementation 
 
 That's why I started putting together proclaunch. I need some of the features of runit, namely automatic restart, with none of the wackyness, and I wanted it to be easy to automatically configure. I also wanted it to be standalone so I wouldn't have to install a pre-alpha version of Mongrel2 just to manage my own processes.
 
+[proclaunch]: http://github.com/peterkeen/proclaunch
+[uspm]:       http://bugsplat.info/2010-08-01-user-space-process-managers.html
+[Mongrel2 manual]: http://mongrel2.org/doc/tip/docs/manual/book.wiki
+[procer]:         http://mongrel2.org/doc/tip/docs/manual/book.wiki#x1-380004.1.1
+[Capistrano]: http://www.capify.org/index.php/Capistrano
+[Privilege::Drop]: http://search.cpan.org/~tlbdk/Privileges-Drop-1.01/lib/Privileges/Drop.pm
+
 --fold--
 
 ### What of it?
@@ -65,9 +72,3 @@ Initially I wanted to use [Privilege::Drop][] from CPAN to drop privileges when 
 
 *Is this something you'd use if it were packaged up nicely on CPAN? Want to use it even before that? Let me know in the comments.*
 
-[proclaunch]: http://github.com/peterkeen/proclaunch
-[uspm]:       http://bugsplat.info/2010-08-01-user-space-process-managers.html
-[Mongrel2 manual]: http://mongrel2.org/doc/tip/docs/manual/book.wiki
-[procer]:         http://mongrel2.org/doc/tip/docs/manual/book.wiki#x1-380004.1.1
-[Capistrano]: http://www.capify.org/index.php/Capistrano
-[Privilege::Drop]: http://search.cpan.org/~tlbdk/Privileges-Drop-1.01/lib/Privileges/Drop.pm

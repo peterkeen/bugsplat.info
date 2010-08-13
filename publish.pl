@@ -41,6 +41,17 @@ copy_static_files();
 sync_to_remote() unless $dry_run;
 open_browser($dry_run);
 
+
+sub internal_link_definitions($entries)
+{
+    my @internal_links;
+
+    for my $entry ( $@entries ) {
+        push @internal_links, process_template('internal_link', $entry);
+    }
+    return join("\n", @internal_links);
+}
+
 sub find_all_entries
 {
     my @entries;
@@ -58,11 +69,25 @@ sub clean_out_dir
     system("rm -rf $OUT_DIR");
 }
 
+sub internal_link_definitions
+{
+    my $entries = shift;
+    my @defs;
+    for my $entry ( @$entries ) {
+        push @defs, process_template('internal_link', $entry);
+    }
+    return join("\n", @defs);
+}
+
 sub write_index_and_blog_entries
 {
     my $entries = shift;
     my $link_list = link_list($entries);
     my $count = 0;
+    my $internal_links = internal_link_definitions($entries);
+
+    $entry->{AfterContent} = $internal_links;
+    $entry->{AfterPrefold} = $internal_links;
 
     my $blog_entries_html = '';
     for my $entry ( blog_entries($entries) ) {
@@ -270,13 +295,17 @@ sub short_date_for_entry
 sub parse_one_file
 {
     $SIG{__DIE__} = sub { use Carp; confess @_ };
+
     my $file = shift;
     return () if -d $file;
     my $stripped_file = $file . ".html";
     substr($stripped_file, 0, length("$ENV{PWD}/entries/"), '');
     my $contents = read_file($file);
     my $entry = parse_entry($contents);
+
+    $entry->{Name} = $file;
     $entry->{Path} = $stripped_file;
+
     return $entry;
 }
 
@@ -289,8 +318,8 @@ sub parse_entry
     my %headers = map { split(/:\s+/, $_, 2) } split(/\n/, $headers);
     $postfold ||= "";
 
-    $headers{Prefold} = markdown($prefold);
-    $headers{Content} = markdown($prefold . "\n" . $postfold || "");
+    $headers{Prefold} = sub { my $after = shift; markdown($prefold . "\n" . $after) };
+    $headers{Content} = sub { my $after = shift; markdown($prefold . "\n" . $postfold . "\n" . $after) };
 
     if ($headers{Date}) {
         $headers{Date} = DateTime::Format::Natural->new(
@@ -306,10 +335,13 @@ sub process_template
 {
     my ($template, $values) = @_;
     my $content = read_file("$ENV{PWD}/templates/$template.html");
+
     $content =~ s{\${([\w_]+)}}{
         my $out = "";
         if (defined $values->{$1}) {
-            $out = $values->{$1};
+            my $value = $values->{$1};
+            my $after = $values->{"After$1"};
+            $out = (ref($value) && ref($value) == 'CODEREF') ? $value->($after) : $value;
         }
         $out;
     }ge;

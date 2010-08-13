@@ -4,6 +4,10 @@ Id:    9
 
 In my day job I use a mix of perl and C++, along with awk, sed, and various little languages. In our C++ we use a lot of boost, especially simple things like the [date_time][] libraries and `tuple`. [Tuple][] is a neat little thing, sort of like `std::pair` except it lets you have up to 10 elements of arbitrary type instead of just the two. One of the major things that it gives you is a correct `operator<`, which gives you the ability to use it as a key in `std::map`. Very handy. One tricky thing, though, is generically iterating over every element in the `tuple`. What then?
 
+[date_time]: http://www.boost.org/doc/libs/1_43_0/doc/html/date_time.html
+[Tuple]:     http://www.boost.org/doc/libs/1_43_0/libs/tuple/doc/tuple_users_guide.html
+[1]:         http://www.c-plusplus.de/forum/viewtopic-var-p-is-1474821.html#1474821
+
 --fold--
 
 It's easy to get at individual elements when you know how many there are and what their types are:
@@ -78,6 +82,3 @@ The fact that it's a recursive solution involving templates might scare some peo
 
 _Note: this was inspired by a forum post in [this German c++ forum][1] but since I can't read German I had to puzzle it out and I thought I'd share._
 
-[date_time]: http://www.boost.org/doc/libs/1_43_0/doc/html/date_time.html
-[Tuple]:     http://www.boost.org/doc/libs/1_43_0/libs/tuple/doc/tuple_users_guide.html
-[1]:         http://www.c-plusplus.de/forum/viewtopic-var-p-is-1474821.html#1474821

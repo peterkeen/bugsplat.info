@@ -4,15 +4,14 @@ Id:    c385f
 
 *Edit 2010-08-08 17:47: ProcLaunch now has a CPAN-compatible install process. See below for details.*
 
-I finally got the chance to work some more on [proclaunch][], my implementation of a *user space process manager*, like runit or mongrel or god. I wrote up a big overview of the currently available options [previously][uspm], but in summary: all of the existing options suck. They're either hard to setup, have memory leaks, have a weird configuration language, or are just plain strange. The only viable option was [procer][], and even that was just sort of a tech demo put together for the [Mongrel2 manual][].
+I finally got the chance to work some more on [proclaunch][], my implementation of a *user space process manager*, like runit or mongrel or god. I wrote up a big overview of the currently available options [previously][12], but in summary: all of the existing options suck. They're either hard to setup, have memory leaks, have a weird configuration language, or are just plain strange. The only viable option was [procer][], and even that was just sort of a tech demo put together for the [Mongrel2 manual][].
 
 That's why I started putting together proclaunch. I need some of the features of runit, namely automatic restart, with none of the wackyness, and I wanted it to be easy to automatically configure. I also wanted it to be standalone so I wouldn't have to install a pre-alpha version of Mongrel2 just to manage my own processes.
 
-[proclaunch]: http://github.com/peterkeen/proclaunch
-[uspm]:       http://bugsplat.info/2010-08-01-user-space-process-managers.html
+[proclaunch]:      http://github.com/peterkeen/proclaunch
 [Mongrel2 manual]: http://mongrel2.org/doc/tip/docs/manual/book.wiki
-[procer]:         http://mongrel2.org/doc/tip/docs/manual/book.wiki#x1-380004.1.1
-[Capistrano]: http://www.capify.org/index.php/Capistrano
+[procer]:          http://mongrel2.org/doc/tip/docs/manual/book.wiki#x1-380004.1.1
+[Capistrano]:      http://www.capify.org/index.php/Capistrano
 [Privilege::Drop]: http://search.cpan.org/~tlbdk/Privileges-Drop-1.01/lib/Privileges/Drop.pm
 
 --fold--

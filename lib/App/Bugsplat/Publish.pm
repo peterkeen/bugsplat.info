@@ -155,8 +155,14 @@ sub write_index
                         Title
                         NaturalDate
                       /),
-                      PathSuffix => '#disqus_thread',
                       ContentHtml => $_->PrefoldHtml($internal_links),
+                      TrailingHtml => $self->process_template(
+                          'comments_link',
+                          {
+                              Path => $_->Path(),
+                              PathSuffix => '#disqus_thread',
+                          }
+                      ),
                     }
                 } grep { $_ } @entries[0..$count] ]
             }
@@ -233,7 +239,12 @@ sub write_pages
                         NaturalDate
                         ContentHtml
                     /),
-                    PathSuffix => '#disqus_thread',
+                    TrailingHtml => $entry->is_blog_entry() ? $self->process_template(
+                        'comments',
+                        {
+                            Dryrun => !$self->is_live()
+                        }
+                    ) : "",
                 }
             ),
             LinkList => $self->link_list(),

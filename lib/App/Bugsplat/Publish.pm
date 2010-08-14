@@ -89,16 +89,13 @@ sub internal_links
 {
     my ($self) = shift;
 
-    my $links = $self->process_template(
+    return $self->process_template(
         'internal_links', {
             Entries => [ map {
                 { $_->view(qw/ Name Path Title Id /) }
             } $self->_entries() ]
         }
     );
-
-    warn $links;
-    return $links;
 }
 
 sub link_list_entries

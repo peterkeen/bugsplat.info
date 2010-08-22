@@ -195,7 +195,7 @@ sub write_archive
             }
         ),
         LinkList => $self->link_list(),
-        Title => '',
+        Title => 'Archive -',
         ShortUrl => 'http://bugsplat.info/archive.html',
     });
 }
@@ -235,9 +235,9 @@ sub write_pages
                 'entry', {
                     $entry->view(qw/
                         Path
-                        Title
                         NaturalDate
                         ContentHtml
+                        Title
                     /),
                     TrailingHtml => $entry->is_blog_entry() ? $self->process_template(
                         'comments',
@@ -248,7 +248,7 @@ sub write_pages
                 }
             ),
             LinkList => $self->link_list(),
-            Title => $entry->Title(),
+            Title => $entry->Title() . ' -',
             ShortUrl => $entry->ShortUrl(),
         });
     }

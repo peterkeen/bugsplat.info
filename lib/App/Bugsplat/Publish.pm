@@ -270,10 +270,13 @@ sub write_htaccess_file
 sub copy_static_files
 {
     my $self = shift;
+    my $static_out = $self->out_dir . "/static/";
+    mkdir $static_out;
+
     File::Find::find(sub {
         return unless -f $File::Find::name;
         print STDERR "Copying " . $File::Find::name . "\n";
-        copy($File::Find::name, $self->out_dir() . "/" . basename($File::Find::name));
+        copy($File::Find::name, $static_out . basename($File::Find::name));
     }, $self->static_dir());
 }
 

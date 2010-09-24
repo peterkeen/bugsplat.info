@@ -10,7 +10,7 @@ use App::Bugsplat::Publish;
 GetOptions(
     "d|dry-run"   => \my $dry_run,
     "l|live"      => \my $live,
-    "sync-path=s" => \(my $sync_path = 'bugsplat.info:/var/web/bugsplat.info'),
+    "sync-path=s" => \(my $sync_path = 'peter@bugsplat.info:/var/web/bugsplat.info'),
 );
 
 my $USAGE = "usage: $0 [--sync-path SYNC PATH] (--dry-run|--live)\n";

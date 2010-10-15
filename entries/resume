@@ -8,24 +8,16 @@ Id:    resume
 
 [Rentrak Corporation](http://www.rentrak.com), Portland, OR
 
-* Designed, developed, and maintained two different demographics systems
-  that overlay demographic and psychographic segments on top of Rentrak's
-  television viewing databases. These systems have set the direction for
-  demographics development for all projects company-wide. The first overlays
-  zip-code level segments from the US census and other third-party sources.
-  The other overlays household-level demographics from credit reporting
-  agencies as well as internally developed behavioral demographics using a
-  custom module within the view repository. 
-  
-* Helped develop a custom data repository using C++, Perl, and PostgreSQL
-  with a team of seven other developers that stores billions of television
-  channel changes.
-  
+* Designed, developed, and deployed two different demographics systems
+  for linear television that have set the direction of all future demographics
+  systems at Rentrak. These systems overlay postal- and household-level
+  segmentation on top of billions of television view transactions.
+
 * Implemented an experimental perl-based framework on top of
   [Hadoop](http://hadoop.apache.org/) and HDFS that was used to test some
   performance hypotheses.
   
-* Helped develop a SQL-like language that compiles to C++ using Perl and
+* Developed a SQL-like language that compiles to C++ using Perl and
   [Parse::RecDescent](http://search.cpan.org/dist/Parse-RecDescent) to
   enable internal users to query the view repository.
 
@@ -40,7 +32,8 @@ Id:    resume
   overhead.
   
 * Wrote one-time and repeatable data extraction and analysis programs
-  to support statistical analysis of televsion viewing behavior.
+  for the CIO and the research department to better understand billions
+  of television view transactions. 
 
 * Worked with another developer and the system administration team to
   convert the entire company from subversion to git. Internal repos are

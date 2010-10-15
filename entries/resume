@@ -13,10 +13,6 @@ Id:    resume
   systems at Rentrak. These systems overlay postal- and household-level
   segmentation on top of hundreds of billions of television view transactions.
 
-* Implemented an experimental perl-based framework on top of
-  [Hadoop](http://hadoop.apache.org/) and HDFS that was used to test some
-  performance hypotheses.
-  
 * Developed a SQL-like language that compiles to C++ using Perl and
   [Parse::RecDescent](http://search.cpan.org/dist/Parse-RecDescent) to
   enable internal users to query the view repository.
@@ -41,6 +37,10 @@ Id:    resume
   
 * Built a video player using Adobe ActionScript and Flex that shows
   DVR-style recordings with viewership data overlays.
+
+* Implemented an experimental perl-based framework on top of
+  [Hadoop](http://hadoop.apache.org/) and HDFS that was used to test some
+  performance hypotheses.
 
 #### Software Development Intern, Sept 2006 - Dec 2006
 

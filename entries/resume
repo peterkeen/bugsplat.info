@@ -8,19 +8,24 @@ Id:    resume
 
 [Rentrak Corporation](http://www.rentrak.com), Portland, OR
 
-* Work with a team of seven other developers to maintain and enhance
-  a custom data repository that stores billions of television views.
-  The repository is a blend of C++, Perl, and PostgreSQL.
-
-* Design, develop, and maintain two different demographics systems
+* Designed, developed, and maintained two different demographics systems
   that overlay demographic and psychographic segments on top of Rentrak's
-  television viewing database. The first overlays zip-code level segments
-  from the US census and other third-party sources. The other overlays
-  household-level demographics from credit reporting agencies as well as
-  internally developed behavioral demographics using a custom module
-  within the view repository.
+  television viewing databases. These systems have set the direction for
+  demographics development for all projects company-wide. The first overlays
+  zip-code level segments from the US census and other third-party sources.
+  The other overlays household-level demographics from credit reporting
+  agencies as well as internally developed behavioral demographics using a
+  custom module within the view repository. 
   
-* Help develop a SQL-like language that compiles to C++ using Perl and
+* Helped develop a custom data repository using C++, Perl, and PostgreSQL
+  with a team of seven other developers that stores billions of television
+  channel changes.
+  
+* Implemented an experimental perl-based framework on top of
+  [Hadoop](http://hadoop.apache.org/) and HDFS that was used to test some
+  performance hypotheses.
+  
+* Helped develop a SQL-like language that compiles to C++ using Perl and
   [Parse::RecDescent](http://search.cpan.org/dist/Parse-RecDescent) to
   enable internal users to query the view repository.
 
@@ -29,23 +34,20 @@ Id:    resume
   distributed or delayed job processing company-wide.
 
 * Designed a new product from scratch with another developer on a three
-  month contract, focusing on the backend data processing. Built a simple
-  pattern for specifiying summary tables that generates all needed code
-  from a DSL-like specification.
-
-* Write one-time and repeatable data extraction and analysis programs
+  month contract, focusing on the backend data processing. Built a DSL-like
+  system within Perl for succinct summary table definition which allows
+  developers to create new summary tables quickly and with very low maintenance
+  overhead.
+  
+* Wrote one-time and repeatable data extraction and analysis programs
   to support statistical analysis of televsion viewing behavior.
-
-* Implemented an experimental perl-based framework on top of
-  [Hadoop](http://hadoop.apache.org/) and HDFS that was used to test some
-  performance hypotheses.
 
 * Worked with another developer and the system administration team to
   convert the entire company from subversion to git. Internal repos are
   hosted using [gitolite](http://github.com/sitaramc/gitolite).
   
-* Built a video player using Flex that shows DVR-style recordings with
-  viewership data overlays.
+* Built a video player using Adobe ActionScript and Flex that shows
+  DVR-style recordings with viewership data overlays.
 
 #### Software Development Intern, Sept 2006 - Dec 2006
 

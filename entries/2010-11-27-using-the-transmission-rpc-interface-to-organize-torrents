@@ -86,7 +86,9 @@ Here's some code that uses the above class to relocate torrents into folders:
       end
     
       if series_parts.length > 0 then
-        return series_parts.map{|s| s.downcase}.join("_").gsub("aaf-", "")
+        return series_parts.map{|s| s.downcase}
+                           .join("_")
+                           .gsub("aaf-", "")
       else
         return nil
       end
@@ -97,13 +99,20 @@ Here's some code that uses the above class to relocate torrents into folders:
     
     client = TransmissionClient.new(server_info)
     
-    torrents = client.send("torrent-get", "fields" => %w{id name downloadDir});
+    torrents = client.send(
+      "torrent-get",
+      "fields" => %w{id name downloadDir}
+    );
     
     torrents["torrents"].each do |t|
       series_name = get_folder_from_name(t["name"])
       next unless series_name
-    
-      puts "Moving #{t['name']} (#{t['id']}) from #{t['downloadDir']} to #{series_name}";
+
+      name = t['name']
+      id   = t['id']
+      download_dir = t['download_dir']
+      
+      puts "Moving #{name} (#{id}) from #{download_dir} to #{series_name}";
     
       client.send(
         "torrent-set-location", 

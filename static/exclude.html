@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <script type="text/javascript">
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+      try {
+        var pageTracker = _gat._getTracker("UA-5663087-2");
+        pageTracker._trackPageview();
+      } catch(err) {}
+    </script>
+  </head>
+  <body onLoad="javascript:pageTracker._setVar('test_value');">
+    Excluding from tracking results
+<script type="text/javascript">
+$(document).ready(function () {
+    $('.bbpTweet .timestamp a[title]').each(function (i, tstamp_node) {
+        var date_parts = $(tstamp_node).attr('title').split(/ /);
+        var new_date_parts = [date_parts[1], date_parts[2] + ",", date_parts[5], date_parts[3], date_parts[4]];
+        var new_date_stamp = new_date_parts.join(' ');
+        var tstamp = new Date(new_date_stamp);
+        $(tstamp_node).text($.relatizeDate.timeAgoInWords(tstamp));
+    });
+});
+</script>
+  </body>
+</html>

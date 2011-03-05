@@ -1,0 +1,121 @@
+Title: Using the Transmission RPC Interface to Organize Torrents
+Date:  2010-11-27 18:53:04
+Id:    fb907
+
+I've been using my Mac mini as a torrent downloader and media server for a few years now using [Transmission][]. Tonight I got fed up with my torrents being in one unsorted mass so I learned the [HTTP RPC api][tr-api] and wrote a simple blocking client that organizes them.
+
+I tried out an [existing client][transmission-client] that I found on GitHub, but it was sort of difficult to use, involving EventMachine and evented techniques. If this was part of a long-running processes I would spend the time to learn how to do this stuff, but this is just a simple script so a blocking technique is just fine.
+
+Here's the client class:
+
+    require 'rubygems'
+    require 'mechanize'
+    require 'json'
+
+    class TransmissionClient
+      attr_reader :agent,
+                  :header_name,
+                  :header_val,
+                  :password,
+                  :port,
+                  :server,
+                  :username
+    
+      def initialize(params)
+        @username = params['username']
+        @password = params['password']
+        @server   = params['server']
+        @port     = params['port'] || "9091"
+    
+        @agent = Mechanize.new
+    
+        @agent.auth(username, password)
+    
+        @header_name = ""
+        @header_val = ""
+      end
+    
+      def server_uri
+        return "http://#{server}:#{port}/transmission/rpc"
+      end
+    
+      def send(method, params)
+        resp = ""
+
+        begin 
+          resp = agent.post(
+            server_uri,
+            JSON.generate({
+              "method" => method,
+              "arguments" => params
+            }),
+            header_name => header_val
+          )
+
+          resp_obj = JSON.parse(resp.body)
+
+          if resp_obj["result"] == "success" then
+            return resp_obj["arguments"]
+          else
+            raise RuntimeError resp.body
+          end
+
+        rescue Mechanize::ResponseCodeError => e
+          @header_name, @header_val =
+              e.page.search("code").first.content.split(/: /)
+          retry
+        end
+      end
+    end
+    
+The only real surprise here is that Transmission sends a session ID  in an error response (http code 409) and expects that session ID to be sent as a header in every request thereafter. Because of how the ruby version of Mechanize works, it's hard to get the headers from the exception that gets thrown on errors, so instead I extract it directly from the response page. Conveniently the `page` property on the exception acts like a [nokogiri][] object so I can just search for the single `code` block on the page and grab the conveniently formatted header.
+
+Here's some code that uses the above class to relocate torrents into folders:
+
+    def get_folder_from_name(name)
+      name_parts = name.split(/\./)
+      series_parts = []
+    
+      if name_parts[0].match(/^[0-9]+/) then
+        series_parts.push name_parts.shift
+      end
+    
+      name_parts.each do |p|
+        break if p.match(/(s?)\d/i)
+        series_parts.push p
+      end
+    
+      if series_parts.length > 0 then
+        return series_parts.map{|s| s.downcase}.join("_").gsub("aaf-", "")
+      else
+        return nil
+      end
+    end
+
+    server_info_str = IO.read("/Users/Peter/.transmission_server");
+    server_info = JSON.parse(server_info_str)
+    
+    client = TransmissionClient.new(server_info)
+    
+    torrents = client.send("torrent-get", "fields" => %w{id name downloadDir});
+    
+    torrents["torrents"].each do |t|
+      series_name = get_folder_from_name(t["name"])
+      next unless series_name
+    
+      puts "Moving #{t['name']} (#{t['id']}) from #{t['downloadDir']} to #{series_name}";
+    
+      client.send(
+        "torrent-set-location", 
+        "ids"      => t["id"], 
+        "location" => "/Users/Peter/Movies/#{series_name}",
+        "move"     => true
+      )
+    end
+
+This instanciates a new client and grabs the `id`, `name`, and `downloadDir` fields for each currently active torrent. Then, it extracts a folder name from torrent's name and tells the client to move the torrent into the proper location. The paths are hardcoded because as I said before, this is a pretty stupid simple script. There's no reason they couldn't be in the config file that holds the server info. Also, the function that extracts a folder name is very specific to the torrents I'm working with.
+
+[Transmission]: http://www.transmissionbt.com/
+[tr-api]:       https://trac.transmissionbt.com/browser/trunk/extras/rpc-spec.txt
+[transmission-client]: https://github.com/dsander/transmission-client
+[nokogiri]: http://nokogiri.org/

@@ -1,0 +1,89 @@
+
+<html>
+<head>
+<style type="text/css" title="currentStyle"> 
+    @import "http://bugsplat.info/static/page.css";
+    @import "http://bugsplat.info/static/table.css";
+</style> 
+<script type="text/javascript" src="http://bugsplat.info/static/jquery.js"></script>
+<script type="text/javascript" src="http://bugsplat.info/static/jquery.dataTables.js"></script>
+<script type="text/javascript" src="http://bugsplat.info/static/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="http://bugsplat.info/static/jqplot.dateAxisRenderer.min.js"></script>
+<script type="text/javascript" src="http://bugsplat.info/static/jqplot.highlighter.min.js"></script>
+<script type="text/javascript" src="http://bugsplat.info/static/jqplot.cursor.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() { $('#income').dataTable({"bPaginate": false, "bFilter": false}); });
+$(document).ready(function() { $('#balance').dataTable({"bPaginate": false, "bFilter": false}); });
+$(document).ready(function() { $('#burn').dataTable({"bPaginate": false, "bFilter": false})});
+$(document).ready(function(){
+  var net_worth_line = [['2008-01-01',-42632.61],['2008-02-01',-41887.95],['2008-03-01',-41329.46],['2008-04-01',-40793.05],['2008-05-01',-40405.50],['2008-06-01',-39776.95],['2008-07-01',-39089.99],['2008-08-01',-38341.45],['2008-09-01',-37727.74],['2008-10-01',-37109.06],['2008-11-01',-36097.10],['2008-12-01',-34633.55],['2009-01-01',-33161.85],['2009-02-01',-31853.10],['2009-03-01',-30435.42],['2009-04-01',-28946.11],['2009-05-01',-27516.01],['2009-06-01',-26080.06],['2009-07-01',-24720.23],['2009-08-01',-23426.94],['2009-09-01',-22173.72],['2009-10-01',-20843.29],['2009-11-01',-19325.15],['2009-12-01',-18061.72],['2010-01-01',-16724.49],['2010-02-01',-15357.58],['2010-03-01',-13934.36],['2010-04-01',-12605.60],['2010-05-01',-11139.09],['2010-06-01',-9861.18],['2010-07-01',-8535.18],['2010-08-01',-7260.74],['2010-09-01',-5886.79],['2010-10-01',-4502.59],['2010-11-01',-3198.50],['2010-12-01',-2959.57],['2011-01-01',-906.69],['2011-02-01',1188.12],['2011-03-01',3174.09],['2011-04-01',5187.73],['2011-05-01',7117.23],['2011-06-01',9109.21],['2011-07-01',10844.38]];
+  var plot1 = $.jqplot('net_worth_chart', [net_worth_line], {
+    title:'',
+    axes:{
+        xaxis:{
+            renderer:$.jqplot.DateAxisRenderer,
+            tickOptions:{
+                formatString:'%Y-%m'
+            }
+        },
+        yaxis:{
+            tickOptions:{
+                formatString:'$%.2f'
+            }
+        }
+    },
+    highlighter:{show:true},
+    series:[{lineWidth:4, markerOptions:{show:false}}]
+  });
+});
+</script>
+<title>2011-07-01 Reports</title>
+</head>
+<body id="dt_example">
+<div id="container">
+<h1>2011-07-01</h1>
+<h2>Balance Sheet</h2>
+
+<table cellpadding=0 cellspacing=0 border=0 class="display" id="balance">
+<thead><tr><th class=>Account</th><th class=right>3 years ago</th><th class=right>2 years ago</th><th class=right>1 year ago</th><th class=right>1 month ago</th><th class=right>This month</th></tr></thead>
+<tbody><tr><td class=>Assets:Checking</td><td class=right>346.63</td><td class=right>5108.44</td><td class=right>11504.66</td><td class=right>20047.14</td><td class=right>21626.31</td></tr>
+<tr><td class=>Assets:Savings</td><td class=right>1540</td><td class=right>4605</td><td class=right>7845</td><td class=right>10953</td><td class=right>11109</td></tr>
+<tr><td class=>Liabilities:Loans:Car</td><td class=right>-17017.18</td><td class=right>-12754.36</td><td class=right>-8489.28</td><td class=right>-4579.41</td><td class=right>-4579.41</td></tr>
+<tr><td class=>Liabilities:Loans:Student</td><td class=right>-23959.44</td><td class=right>-21679.31</td><td class=right>-19395.56</td><td class=right>-17311.52</td><td class=right>-17311.52</td></tr>
+<tr><td class=>Total</td><td class=right>-39089.99</td><td class=right>-24720.23</td><td class=right>-8535.18</td><td class=right>9109.21</td><td class=right>10844.38</td></tr></tbody>
+</table>
+
+<h2>Net Worth by Month<h2>
+<div id="net_worth_chart" style="height:300px; width=650px"></div>
+<br />
+<h2>Income Statement</h2>
+
+<table cellpadding=0 cellspacing=0 border=0 class="display" id="income">
+<thead><tr><th class=>Account</th><th class=right>3 years ago</th><th class=right>2 years ago</th><th class=right>1 year ago</th><th class=right>1 month ago</th><th class=right>This month</th></tr></thead>
+<tbody><tr><td class=>Expenses:Entertainment</td><td class=right>126.57</td><td class=right>119.13</td><td class=right>132.65</td><td class=right>150.26</td><td class=right>0</td></tr>
+<tr><td class=>Expenses:Food:Groceries</td><td class=right>238.81</td><td class=right>286.47</td><td class=right>202.10</td><td class=right>265.31</td><td class=right>39.68</td></tr>
+<tr><td class=>Expenses:Food:Out</td><td class=right>204.96</td><td class=right>246.17</td><td class=right>348.25</td><td class=right>208.15</td><td class=right>95.07</td></tr>
+<tr><td class=>Expenses:Insurance</td><td class=right>204</td><td class=right>204</td><td class=right>204</td><td class=right>204</td><td class=right>55</td></tr>
+<tr><td class=>Expenses:Interest:Car</td><td class=right>115</td><td class=right>108.41</td><td class=right>110.44</td><td class=right>103.03</td><td class=right>0</td></tr>
+<tr><td class=>Expenses:Interest:Student</td><td class=right>13.6</td><td class=right>12.51</td><td class=right>13.58</td><td class=right>13.2</td><td class=right>0</td></tr>
+<tr><td class=>Expenses:Rent</td><td class=right>800</td><td class=right>800</td><td class=right>800</td><td class=right>800</td><td class=right>0</td></tr>
+<tr><td class=>Expenses:Taxes</td><td class=right>1722</td><td class=right>1896.48</td><td class=right>1896.48</td><td class=right>2088.16</td><td class=right>1044.08</td></tr>
+<tr><td class=>Expenses:Utils:Electric</td><td class=right>53.77</td><td class=right>54.58</td><td class=right>54.21</td><td class=right>56.96</td><td class=right>0</td></tr>
+<tr><td class=>Expenses:Utils:Gas</td><td class=right>54.33</td><td class=right>59.08</td><td class=right>58.95</td><td class=right>56.95</td><td class=right>0</td></tr>
+<tr><td class=>Income:Salary</td><td class=right>-4440</td><td class=right>-5416.66</td><td class=right>-5416.66</td><td class=right>-6250</td><td class=right>-3125</td></tr>
+<tr><td class=>Liabilities:Loans:Car</td><td class=right>355.19</td><td class=right>353.41</td><td class=right>357.6</td><td class=right>353.64</td><td class=right>0</td></tr>
+<tr><td class=>Liabilities:Loans:Student</td><td class=right>191.07</td><td class=right>185.29</td><td class=right>184.61</td><td class=right>189.32</td><td class=right>0</td></tr>
+<tr><td class=>Total</td><td class=right>-360.70</td><td class=right>-1091.13</td><td class=right>-1053.79</td><td class=right>-1761.02</td><td class=right>-1891.17</td></tr></tbody>
+</table>
+
+<br /><br />
+<h2>Burn Rate</h2>
+
+<table cellpadding=0 cellspacing=0 border=0 class="display" id="burn">
+<thead><tr><th class=center>Burn</th><th class=center>Months</th><th class=center>Drop Dead</th></tr></thead>
+<tbody><tr><td class=center>  1737.47</td><td class=center> 6.4</td><td class=center>2012-02-13</td></tr></tbody>
+</table>
+
+</div>
+</body>
+</html>

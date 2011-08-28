@@ -2,7 +2,11 @@ Title: Program Your Finances: Vacation Tracking
 Date:  2011-08-04 16:47:48
 Id:    7e479
 
+*Note: you can find much more information about ledger on [ledger-cli.org](http://ledger-cli.org), including links to official documentation and other implementations*
+
 Recently my girlfriend and I visited the wonderful city of Vancouver, Canada. While out of country we tend to use my [Schwab Investor Checking][schwab] account because it carries no fees whatsoever, including currency conversions, and it refunds all ATM fees. Last year when we went to Ireland we just kept all of the receipts and figured it out when we got back, which was excrutiatingly painful. Lost receipts, invisible cash transactions, ugh. It hurts to even think about it. This year, I decided to cobble together a simple system so we could track on the fly. Read on to see how it came together.
+
+[schwab]: http://www.schwab.com/public/schwab/banking_lending/checking
 
 --fold--
 
@@ -140,7 +144,6 @@ I think it turned out pretty well. I spent less than an hour the day after we go
 
 *Have you been in this situation and done something different? Leave a comment!*
 
-[schwab]: http://www.schwab.com/public/schwab/banking_lending/checking
 [Dropbox]: http://www.dropbox.com
 [Ledger]: http://www.ledger-cli.org
 [Nebulous Notes]: http://nebulousapps.net/notes.html

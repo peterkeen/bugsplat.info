@@ -4,6 +4,17 @@ Id:    resume
 
 ### Experience ##
 
+#### Platform Developer, April 2011 - Current ###
+
+[Emma](http://www.myemma.com), Portland, OR
+
+* Ported the main application to a web-service-style backend using
+  Python, WebOB, PostgreSQL, and redis.
+
+* Built a search module that consumes a json-based search description,
+  builds an equivalent SQL query, and executes the query on a sharded
+  PostgreSQL database system.
+
 #### Software Developer, January 2007 - April 2011 ###
 
 [Rentrak Corporation](http://www.rentrak.com), Portland, OR

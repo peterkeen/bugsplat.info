@@ -6,7 +6,7 @@ This blog uses a custom [static html blog](http://bugsplat.info/2010-03-28-yet-a
  * No external dependencies
  * Maximum flexibility in hosting locations
  * Fast and easy to modify
- * Ability to keep my blog in [version control](https://github.com/peterkeen/bugslat.info) using [git](http://git-scm.com/)
+ * Ability to keep my blog in [version control](https://github.com/peterkeen/bugsplat.info) using [git](http://git-scm.com/)
 
 If you want to use my engine, be warned that it's rather specific to my needs on [bugsplat](http://bugsplat.info). However, there are a few more general, more flexible options out there now:
 

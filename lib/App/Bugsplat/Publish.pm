@@ -179,6 +179,7 @@ sub write_archive
     my $internal_links = $self->internal_links();
 
     my @entries = $self->blog_entries();
+    my @non_blog_entries = $self->non_blog_entries();
 
     my $count = $self->front_page_count() - 1;
     $self->write_page('archive.html', {
@@ -191,7 +192,7 @@ sub write_archive
                         ShortDate
                       /),
                     }
-                } @entries ]
+                } @entries, @non_blog_entries ]
             }
         ),
         LinkList => $self->link_list(),

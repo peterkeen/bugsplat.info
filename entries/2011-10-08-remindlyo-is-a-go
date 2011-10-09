@@ -1,0 +1,19 @@
+Title: Remindlyo is a Go
+Date:  2011-10-08 17:24:56
+Id:    93cd7
+
+Eight weeks ago I embarked, almost by accident, on one of the most interesting challenges that I've ever set up for myself. I've created something new, something that I don't think the world has had before, and that makes me feel good. So, if you're reading this, go check out [Remindlyo](https://www.remindlyo.com), because it's as done as it's going to get for now.
+
+--fold--
+
+Remindlyo, at it's core, is about procrastination and forgetfulness. Do you forget to call someone important? Do you "forget" because you can't bring yourself to actually dial the phone? Remindlyo helps out with that, since the friction of hitting a single button on a keypad is so much lower than that of dialing the phone in the first place. You've already answered the phone, might as well keep the ball rolling.
+
+For those of you who care about such things, here's the tech stack:
+
+ * [Rails 3](http://rubyonrails.org/)
+ * [Heroku](http://www.heroku.com)
+ * [Sendgrid](http://www.sendgrid.com)
+ * [Twilio](http://www.twilio.com)
+ * [Stripe](https://www.stripe.com)
+ 
+I'm doing this on my own without much feedback, so if you have any please share it. I would really appreciate anything you have to say.
